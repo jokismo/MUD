@@ -2,7 +2,7 @@
 
 angular.module('mudApp.auth')
 
-  .controller('LoginCtrl', ['$scope', 'loginService', '$location', function($scope, loginService, $location) {
+  .controller('LoginCtrl', ['$scope', 'loginService', function($scope, loginService) {
 
     $scope.email = null;
     $scope.pass = null;

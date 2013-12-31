@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('mudApp.auth')
 
 /**
@@ -10,9 +12,9 @@ angular.module('mudApp.auth')
         el.addClass('hide');
         waitForAuth.then(function() {
           el.removeClass('hide');
-        })
+        });
       }
-    }
+    };
   })
 
 /**
@@ -29,9 +31,9 @@ angular.module('mudApp.auth')
           el.toggleClass('hide', loginState !== expState );
         }
         fn(null);
-        $rootScope.$on("$firebaseAuth:login",  function() { fn('login') });
-        $rootScope.$on("$firebaseAuth:logout", function() { fn('logout') });
-        $rootScope.$on("$firebaseAuth:error",  function() { fn('error') });
+        $rootScope.$on('$firebaseAuth:login',  function() { fn('login'); });
+        $rootScope.$on('$firebaseAuth:logout', function() { fn('logout'); });
+        $rootScope.$on('$firebaseAuth:error',  function() { fn('error'); });
       }
-    }
+    };
   });

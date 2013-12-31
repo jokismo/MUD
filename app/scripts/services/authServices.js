@@ -5,9 +5,6 @@
 
     .service('waitForAuth', function($rootScope, $q, $timeout) {
       var def = $q.defer(), subs = [];
-      subs.push($rootScope.$on('$firebaseAuth:login', fn));
-      subs.push($rootScope.$on('$firebaseAuth:logout', fn));
-      subs.push($rootScope.$on('$firebaseAuth:error', fn));
       function fn() {
         for(var i=0; i < subs.length; i++) { subs[i](); }
         $timeout(function() {
@@ -15,12 +12,18 @@
           def.resolve();
         });
       }
+      subs.push($rootScope.$on('$firebaseAuth:login', fn));
+      subs.push($rootScope.$on('$firebaseAuth:logout', fn));
+      subs.push($rootScope.$on('$firebaseAuth:error', fn));
       return def.promise;
     })
 
     .factory('loginService', ['$rootScope', '$firebaseAuth', 'firebaseRef', 'profileCreator', '$timeout', '$location',
       function($rootScope, $firebaseAuth, firebaseRef, profileCreator, $timeout, $location) {
         var auth = null;
+        function assertAuth() {
+          if( auth === null ) { throw new Error('Must call loginService.init() before using its methods'); }
+        }
         return {
           init: function(path) {
             return auth = $firebaseAuth(firebaseRef(), {path: path});
@@ -76,21 +79,10 @@
           createProfile: profileCreator
         };
 
-        function assertAuth() {
-          if( auth === null ) { throw new Error('Must call loginService.init() before using its methods'); }
-        }
       }])
 
     .factory('profileCreator', ['firebaseRef', '$timeout', function(firebaseRef, $timeout) {
       return function(id, email, callback) {
-        firebaseRef('users/'+id).set({email: email, name: firstPartOfEmail(email)}, function(err) {
-          //err && console.error(err);
-          if( callback ) {
-            $timeout(function() {
-              callback(err);
-            })
-          }
-        });
 
         function firstPartOfEmail(email) {
           return ucfirst(email.substr(0, email.indexOf('@'))||'');
@@ -101,11 +93,17 @@
           var f = str.charAt(0).toUpperCase();
           return f + str.substr(1);
         }
-      }
-    }]);
 
-  function errMsg(err) {
-    return err? typeof(err) === 'object'? '['+err.code+'] ' + err.toString() : err+'' : null;
-  }
+        firebaseRef('users/'+id).set({email: email, name: firstPartOfEmail(email)}, function(err) {
+          //err && console.error(err);
+          if( callback ) {
+            $timeout(function() {
+              callback(err);
+            });
+          }
+        });
+
+      };
+    }]);
 
 })();

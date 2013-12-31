@@ -13,7 +13,8 @@ angular.module('mudApp',
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/', {
       authRequired: true,
-      templateUrl: 'views/main.html'
+      templateUrl: 'views/main.html',
+      controller: 'GuiCtrl'
     });
 
     $routeProvider.when('/login', {
@@ -35,9 +36,10 @@ angular.module('mudApp',
   .run(['loginService', '$rootScope', 'FBURL', function(loginService, $rootScope, FBURL) {
     $rootScope.auth = loginService.init('/login');
     $rootScope.FBURL = FBURL;
+    $rootScope.guiSettings = {};
   }]);
 
 angular.module('mudApp.config', []);
 angular.module('mudApp.firebaseServices', []);
 angular.module('mudApp.auth', ['mudApp.firebaseServices']);
-angular.module('mudApp.mainView', []);
+angular.module('mudApp.mainView', ['mudApp.firebaseServices']);

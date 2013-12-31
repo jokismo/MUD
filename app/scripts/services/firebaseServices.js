@@ -12,13 +12,13 @@
        * @param {String|Array...} path
        * @return a Firebase instance
        */
-      return function(path) {
+      return function() {
         return new Firebase(pathRef([FBURL].concat(Array.prototype.slice.call(arguments))));
-      }
+      };
     }])
 
     // a simple utility to create $firebase objects from angularFire
-    .service('syncData', ['$firebase', 'firebaseRef', function($firebase, firebaseRef) {
+    .service('getBind', ['$firebase', 'firebaseRef', function($firebase, firebaseRef) {
       /**
        * @function
        * @name syncData
@@ -30,16 +30,16 @@
         var ref = firebaseRef(path);
         limit && (ref = ref.limit(limit));
         return $firebase(ref);
-      }
-    }])
+      };
+    }]);
 
-    function pathRef(args) {
-      for(var i=0; i < args.length; i++) {
-        if( typeof(args[i]) === 'object' ) {
-          args[i] = pathRef(args[i]);
-        }
+  function pathRef(args) {
+    for(var i=0; i < args.length; i++) {
+      if( typeof(args[i]) === 'object' ) {
+        args[i] = pathRef(args[i]);
       }
-      return args.join('/');
     }
+    return args.join('/');
+  }
 
 })();
