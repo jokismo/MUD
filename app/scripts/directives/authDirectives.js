@@ -1,4 +1,4 @@
-angular.module('mudApp.auth', [])
+angular.module('mudApp.auth')
 
 /**
  * A directive that hides the element from view until waitForAuth resolves

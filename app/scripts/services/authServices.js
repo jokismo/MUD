@@ -1,14 +1,7 @@
 (function() {
   'use strict';
 
-  /* Services */
-
-  /**
-   * A service that returns a promise object, which is resolved once $firebaseAuth
-   * is initialized (i.e. it returns login, logout, or error)
-   */
-
-  angular.module('mudApp.auth', [])
+  angular.module('mudApp.auth')
 
     .service('waitForAuth', function($rootScope, $q, $timeout) {
       var def = $q.defer(), subs = [];
@@ -25,37 +18,8 @@
       return def.promise;
     })
 
-    // a simple utility to create references to Firebase paths
-    .factory('firebaseRef', ['Firebase', 'FBURL', function(Firebase, FBURL) {
-      /**
-       * @function
-       * @name firebaseRef
-       * @param {String|Array...} path
-       * @return a Firebase instance
-       */
-      return function(path) {
-        return new Firebase(pathRef([FBURL].concat(Array.prototype.slice.call(arguments))));
-      }
-    }])
-
-    // a simple utility to create $firebase objects from angularFire
-    .service('syncData', ['$firebase', 'firebaseRef', function($firebase, firebaseRef) {
-      /**
-       * @function
-       * @name syncData
-       * @param {String|Array...} path
-       * @param {int} [limit]
-       * @return a Firebase instance
-       */
-      return function(path, limit) {
-        var ref = firebaseRef(path);
-        limit && (ref = ref.limit(limit));
-        return $firebase(ref);
-      }
-    }])
-
-    .factory('loginService', ['$rootScope', '$firebaseAuth', 'firebaseRef', 'profileCreator', '$timeout',
-      function($rootScope, $firebaseAuth, firebaseRef, profileCreator, $timeout) {
+    .factory('loginService', ['$rootScope', '$firebaseAuth', 'firebaseRef', 'profileCreator', '$timeout', '$location',
+      function($rootScope, $firebaseAuth, firebaseRef, profileCreator, $timeout, $location) {
         var auth = null;
         return {
           init: function(path) {
@@ -68,20 +32,26 @@
            * @param {Function} [callback]
            * @returns {*}
            */
-          login: function(email, pass, callback) {
+          login: function(email, pass, redirect, callback) {
             assertAuth();
             auth.$login('password', {
               email: email,
               password: pass,
               rememberMe: true
             }).then(function(user) {
+                if( redirect ) {
+                  $location.path(redirect);
+                }
                 callback && callback(null, user);
               }, callback);
           },
 
-          logout: function() {
+          logout: function(redirect) {
             assertAuth();
             auth.$logout();
+            if( redirect ) {
+              $location.path(redirect);
+            }
           },
 
           changePassword: function(opts) {
@@ -127,7 +97,6 @@
         }
 
         function ucfirst (str) {
-          // credits: http://kevin.vanzonneveld.net
           str += '';
           var f = str.charAt(0).toUpperCase();
           return f + str.substr(1);
@@ -139,12 +108,4 @@
     return err? typeof(err) === 'object'? '['+err.code+'] ' + err.toString() : err+'' : null;
   }
 
-  function pathRef(args) {
-    for(var i=0; i < args.length; i++) {
-      if( typeof(args[i]) === 'object' ) {
-        args[i] = pathRef(args[i]);
-      }
-    }
-    return args.join('/');
-  }
 })();

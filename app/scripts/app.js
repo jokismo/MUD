@@ -4,6 +4,7 @@
 angular.module('mudApp',
     ['mudApp.config'
       , 'mudApp.auth'
+      , 'mudApp.mainView'
       , 'firebase'
       , 'ngRoute']
   )
@@ -16,7 +17,8 @@ angular.module('mudApp',
     });
 
     $routeProvider.when('/login', {
-      templateUrl: 'views/login.html'
+      templateUrl: 'views/login.html',
+      controller: 'LoginCtrl'
     });
 
     $routeProvider.otherwise({redirectTo: '/login'});
@@ -25,7 +27,7 @@ angular.module('mudApp',
   // App Config Check
   .run(['FBURL', function(FBURL) {
     if( FBURL === 'https://INSTANCE.firebaseio.com' ) {
-      angular.element(document.body).html('<h1>Please configure app/js/config.js before running!</h1>');
+      angular.element(document.body).html('<h1>Config Error</h1>');
     }
   }])
 
@@ -36,4 +38,6 @@ angular.module('mudApp',
   }]);
 
 angular.module('mudApp.config', []);
-angular.module('mudApp.auth', []);
+angular.module('mudApp.firebaseServices', []);
+angular.module('mudApp.auth', ['mudApp.firebaseServices']);
+angular.module('mudApp.mainView', []);
