@@ -1,0 +1,19 @@
+@import "compass/css3";
+
+.colBox {
+  position: fixed;
+  background: rgba(0,0,0,0.2);
+  margin: 10px;
+  @include border-radius(3px);
+  z-index: 5;
+}
+
+.colBoxInner {
+  padding: 10px;
+}
+
+#worldmapCont {
+  position: fixed;
+  margin: 10px;
+  z-index: 4;
+}

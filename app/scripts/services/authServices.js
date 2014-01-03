@@ -26,6 +26,7 @@
         }
         return {
           init: function(path) {
+
             return auth = $firebaseAuth(firebaseRef(), {path: path});
           },
 

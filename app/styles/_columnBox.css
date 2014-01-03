@@ -2,28 +2,21 @@
 Syntax error: File to import not found or unreadable: compass/css3.
               Load path: C:/MUD/app/styles
         on line 1 of _columnBox.scss
-        from line 8 of main.scss
 
-1: $icon-font-path: "/bower_components/sass-bootstrap/fonts/";
+1: @import "compass/css3";
 2: 
-3: @import "../bower_components/sass-bootstrap/lib/bootstrap";
-4: 
-5: /* Partials *\/
-6: 
+3: .colBox {
+4:   background: rgba(0,0,0,0.2);
+5:   margin: 10px;
+6:   @include border-radius(3px);
 
 Backtrace:
 _columnBox.scss:1
-main.scss:8
 C:/Ruby193/lib/ruby/gems/1.9.1/gems/sass-3.2.11/lib/sass/tree/import_node.rb:67:in `rescue in import'
 C:/Ruby193/lib/ruby/gems/1.9.1/gems/sass-3.2.11/lib/sass/tree/import_node.rb:45:in `import'
 C:/Ruby193/lib/ruby/gems/1.9.1/gems/sass-3.2.11/lib/sass/tree/import_node.rb:28:in `imported_file'
 C:/Ruby193/lib/ruby/gems/1.9.1/gems/sass-3.2.11/lib/sass/tree/import_node.rb:37:in `css_import?'
 C:/Ruby193/lib/ruby/gems/1.9.1/gems/sass-3.2.11/lib/sass/tree/visitors/perform.rb:217:in `visit_import'
-C:/Ruby193/lib/ruby/gems/1.9.1/gems/sass-3.2.11/lib/sass/tree/visitors/base.rb:37:in `visit'
-C:/Ruby193/lib/ruby/gems/1.9.1/gems/sass-3.2.11/lib/sass/tree/visitors/perform.rb:100:in `visit'
-C:/Ruby193/lib/ruby/gems/1.9.1/gems/sass-3.2.11/lib/sass/tree/visitors/perform.rb:227:in `block in visit_import'
-C:/Ruby193/lib/ruby/gems/1.9.1/gems/sass-3.2.11/lib/sass/tree/visitors/perform.rb:227:in `map'
-C:/Ruby193/lib/ruby/gems/1.9.1/gems/sass-3.2.11/lib/sass/tree/visitors/perform.rb:227:in `visit_import'
 C:/Ruby193/lib/ruby/gems/1.9.1/gems/sass-3.2.11/lib/sass/tree/visitors/base.rb:37:in `visit'
 C:/Ruby193/lib/ruby/gems/1.9.1/gems/sass-3.2.11/lib/sass/tree/visitors/perform.rb:100:in `visit'
 C:/Ruby193/lib/ruby/gems/1.9.1/gems/sass-3.2.11/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
@@ -56,4 +49,4 @@ C:/Ruby193/bin/scss:23:in `<main>'
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: File to import not found or unreadable: compass/css3.\A               Load path: C:/MUD/app/styles\A         on line 1 of _columnBox.scss\A         from line 8 of main.scss\A \A 1: $icon-font-path: \"/bower_components/sass-bootstrap/fonts/\";\A 2: \A 3: @import \"../bower_components/sass-bootstrap/lib/bootstrap\";\A 4: \A 5: /* Partials */\A 6: "; }
+  content: "Syntax error: File to import not found or unreadable: compass/css3.\A               Load path: C:/MUD/app/styles\A         on line 1 of _columnBox.scss\A \A 1: @import \"compass/css3\";\A 2: \A 3: .colBox {\A 4:   background: rgba(0,0,0,0.2);\A 5:   margin: 10px;\A 6:   @include border-radius(3px);"; }

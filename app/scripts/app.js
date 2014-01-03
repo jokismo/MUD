@@ -22,7 +22,7 @@ angular.module('mudApp',
       controller: 'LoginCtrl'
     });
 
-    $routeProvider.otherwise({redirectTo: '/login'});
+    $routeProvider.otherwise({redirectTo: '/'});
   }])
 
   // App Config Check
@@ -32,11 +32,14 @@ angular.module('mudApp',
     }
   }])
 
-  // Auth Init
-  .run(['loginService', '$rootScope', 'FBURL', function(loginService, $rootScope, FBURL) {
+  // Init
+  .run(['loginService', '$rootScope', 'FBURL', '$location', function(loginService, $rootScope, FBURL, $location) {
     $rootScope.auth = loginService.init('/login');
     $rootScope.FBURL = FBURL;
-    $rootScope.guiSettings = {};
+    $rootScope.data = {};
+    $rootScope.$on('$firebaseAuth:logout', function() {
+      $location.path('/login');
+    });
   }]);
 
 angular.module('mudApp.config', []);
