@@ -5,11 +5,10 @@ angular.module('mudApp.mainView')
   .controller('HeaderCtrl', ['$scope', 'loginService', function($scope, loginService) {
 
     $scope.showSettings = false;
-    $scope.data.uiSettings.editing = false;
-    $scope.data.uiSettings.showHeader = true;
-    $scope.data.uiSettings.header = 'headerOn';
 
-    $scope.columnOptions = [1,2,3];
+    $scope.data.uiSettings.header = {
+      showHeader : true
+    };
 
     $scope.logout = function() {
       loginService.logout();
@@ -17,7 +16,6 @@ angular.module('mudApp.mainView')
 
     $scope.settings = function() {
       $scope.showSettings = !$scope.showSettings;
-      $scope.data.uiSettings.editing = !$scope.data.uiSettings.editing;
     };
 
     $scope.saveSettings = function() {
@@ -25,9 +23,20 @@ angular.module('mudApp.mainView')
       $scope.data.uiSettings.$save();
     };
 
+    $scope.toggleDrag = function() {
+      $scope.data.uiSettings.guisettings.draggable = !$scope.data.uiSettings.guisettings.draggable;
+    };
+
+    $scope.toggleResize = function() {
+      $scope.data.uiSettings.guisettings.resizable = !$scope.data.uiSettings.guisettings.resizable;
+    };
+
+    $scope.toggleSnap = function() {
+      $scope.data.uiSettings.guisettings.snap = !$scope.data.uiSettings.guisettings.snap;
+    };
+
     $scope.hide = function() {
-      $scope.data.uiSettings.showHeader = false;
-      $scope.data.uiSettings.header = '';
+      $scope.data.uiSettings.header.showHeader = false;
     };
 
   }]);

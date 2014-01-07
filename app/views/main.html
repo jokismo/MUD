@@ -1,19 +1,42 @@
-<keybinding on="esc" invoke="showHeader()"></keybinding>
 <header data-ng-include="'views/header.html'"></header>
 <div id="colContainer" class="fullHeight">
-  <quests>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores eligendi error
-    unde. Atque beatae error eum expedita hic iure iusto magnam mollitia nisi repudiandae? Dolorem enim fuga quaerat sed vero.</quests>
-  <npcs>NPCS</npcs>
-  <target>TARGET</target>
-  <chat>CHAT</chat>
-  <battle>BATTLE</battle>
-  <party>PARTY</party>
-  <enemy>ENEMY</enemy>
-  <global>GLOBAL</global>
-  <char>CHAR</char>
-  <inv>INV</inv>
-  <ownstatus>OWNSTATUS</ownstatus>
-  <enemystatus>ENEMYSTATUS</enemystatus>
-  <worldmap></worldmap>
-  </div>
+
+  <quests class="colBox"
+          ng-controller="questCtrl"
+          ng-show="data.uiSettings.quests.show"
+          resizable
+          draggable
+          load-settings>
+  </quests>
+
+  <menubar class="colBox"
+          ng-controller="menubarCtrl"
+          ng-show="data.uiSettings.menubar.show"
+          draggable
+          load-settings>
+  </menubar>
+
+  <npcs class="colBox"
+           ng-controller="npcCtrl"
+           ng-show="data.uiSettings.npcs.show"
+           draggable
+           resizable
+           load-settings>
+  </npcs>
+
+  <target class="colBox"
+        ng-controller="targetCtrl"
+        draggable
+        resizable
+        load-settings>
+  </target>
+
+  <chat class="colBox"
+          ng-controller="chatCtrl"
+          ng-show="data.uiSettings.chat.show"
+          draggable
+          resizable
+          load-settings>
+  </chat>
+
 </div>

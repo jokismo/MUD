@@ -2,53 +2,81 @@
 
 angular.module('mudApp.mainView')
 
-  .directive('flexible', function() {
-    return {
-      restrict: 'A',
-      link: function(scope, element, attrs) {
-        attrs.$observe('flexible', function(cols) {
-          var editing,
-              resizeCol = function() {
-                element.css({
-                  'width' : window.innerWidth - 300 * ( cols[0] - 1 ) + 'px',
-                  'left' : '300px'
-                });
-              };
-          cols = cols.split(" ");
-          editing = (cols[1] === "true");
-          if (cols.length > 1 && !editing) {
-            resizeCol();
-            window.addEventListener('resize', resizeCol, true);
-          }
-        });
-      }
-    };
-  })
-
   .directive('resizable', function() {
     return {
       restrict: 'A',
       link: function(scope, element, attrs) {
-        element.resizable();
-        attr.$observe('resizable', function(resizable) {
-          if (resizable === "true") {
-            element.resizable();
-          } else {
-            element.resizable("disable");
+        var elemName = element.prop("tagName").toLowerCase(),
+          options = {
+          handles: "all",
+          containment: "document",
+          stop: function(event, ui) {
+            scope.$apply(function() {
+              scope.data.uiSettings[elemName].sizex = ui.size.width;
+              scope.data.uiSettings[elemName].sizey = ui.size.height;
+            });
           }
+        };
+        scope.$on('loadGui', function() {
+          element.resizable(options);
+          scope.$watch('data.uiSettings.guisettings.resizable', function() {
+            if (scope.data.uiSettings.guisettings.resizable) {
+              element.resizable("enable");
+            } else {
+              element.resizable("disable");
+            }
+          });
+        });
+
+      }
+    };
+  })
+
+  .directive('draggable', function() {
+    return {
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        var elemName = element.prop("tagName").toLowerCase(),
+          options = {
+          snap: true,
+          containment: "document",
+          stop: function(event, ui) {
+            scope.$apply(function() {
+              scope.data.uiSettings[elemName].posx = ui.offset.left;
+              scope.data.uiSettings[elemName].posy = ui.offset.top;
+            });
+          }
+        };
+        scope.$on('loadGui', function() {
+          element.draggable(options);
+          scope.$watch('data.uiSettings.guisettings.draggable', function() {
+            if (scope.data.uiSettings.guisettings.draggable) {
+              element.draggable("enable");
+            } else {
+              element.draggable("disable");
+            }
+          });
+          scope.$watch('data.uiSettings.guisettings.snap', function() {
+            element.draggable('option', 'snap', scope.data.uiSettings.guisettings.snap);
+          });
         });
       }
     };
   })
 
-  .directive('keybinding', function () {
+  .directive('loadSettings', function() {
     return {
-      restrict: 'E',
-      scope: {
-        invoke: '&'
-      },
-      link: function (scope, el, attr) {
-        Mousetrap.bind(attr.on, scope.invoke);
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        scope.$on('loadGui', function() {
+          var elemName = element.prop("tagName").toLowerCase();
+          element.css({
+            'width' : scope.data.uiSettings[elemName].sizex + 'px',
+            'height' : scope.data.uiSettings[elemName].sizey + 'px',
+            'left' : scope.data.uiSettings[elemName].posx,
+            'top' : scope.data.uiSettings[elemName].posy
+          });
+        });
       }
     };
   });

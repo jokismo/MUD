@@ -8,9 +8,10 @@ html {
 body {
   @extend html;
   background: #303030;
+  overflow: hidden;
 }
 
-.headerOn {
+.showHeader {
   padding-top: 50px;
 }
 

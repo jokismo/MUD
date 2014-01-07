@@ -5,11 +5,13 @@ angular.module('mudApp.mainView')
   .directive('quests', function() {
     return {
       restrict: 'E',
-      transclude: true,
-      template: '<div class="colBox" resizable="true" ng-controller="questCtrl">' +
-        '<div class="colBoxInner" ng-transclude></div>' +
+      template: '<div>' +
+          '<div class="colBoxInner">' +
+            '{{data.uiSettings.quests}}' +
+          '</div>' +
         '</div>',
       link: function(scope, element, attrs) {
+
       }
     };
   })
@@ -17,9 +19,10 @@ angular.module('mudApp.mainView')
   .directive('npcs', function() {
     return {
       restrict: 'E',
-      transclude: true,
-      template: '<div class="colBox" resizable="true" ng-controller="npcCtrl">' +
-        '<div class="colBoxInner" ng-transclude></div>' +
+      template: '<div>' +
+          '<div class="colBoxInner">' +
+            'NPCS' +
+          '</div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -29,9 +32,10 @@ angular.module('mudApp.mainView')
   .directive('target', function() {
     return {
       restrict: 'E',
-      transclude: true,
-      template: '<div class="colBox" resizable="true" ng-controller="targetCtrl">' +
-        '<div class="colBoxInner" ng-transclude></div>' +
+      template: '<div>' +
+          '<div class="colBoxInner">' +
+            'TARGET' +
+          '</div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -41,9 +45,25 @@ angular.module('mudApp.mainView')
   .directive('chat', function() {
     return {
       restrict: 'E',
-      transclude: true,
-      template: '<div class="colBox" resizable="true" ng-controller="chatCtrl">' +
-        '<div class="colBoxInner" ng-transclude></div>' +
+      template: '<div>' +
+          '<div class="colBoxInner">' +
+            'CHAT' +
+          '</div>' +
+        '</div>',
+      link: function(scope, element, attrs) {
+      }
+    };
+  })
+
+  .directive('menubar', function() {
+    return {
+      restrict: 'E',
+      template: '<div>' +
+          '<div class="colBoxInner btn-group">' +
+            '<button class="btn btn-default" ng-repeat="window in windows" ng-click="toggleWindow(window.directiveName)">' +
+              '<span class="{{window.display}}" tooltip="{{window.tooltip}}"></span>' +
+            '</button>' +
+          '</div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -53,9 +73,9 @@ angular.module('mudApp.mainView')
   .directive('battle', function() {
     return {
       restrict: 'E',
-      transclude: true,
-      template: '<div class="colBox" resizable="true" ng-controller="battleCtrl">' +
-        '<div class="colBoxInner" ng-transclude></div>' +
+      controller: 'battleCtrl',
+      template: '<div class="colBox" resizable="true">' +
+        '<div class="colBoxInner"></div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -65,9 +85,9 @@ angular.module('mudApp.mainView')
   .directive('party', function() {
     return {
       restrict: 'E',
-      transclude: true,
-      template: '<div class="colBox" resizable="true" ng-controller="partyCtrl">' +
-        '<div class="colBoxInner" ng-transclude></div>' +
+      controller: 'partyCtrl',
+      template: '<div class="colBox" resizable="true">' +
+        '<div class="colBoxInner"></div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -77,9 +97,9 @@ angular.module('mudApp.mainView')
   .directive('enemy', function() {
     return {
       restrict: 'E',
-      transclude: true,
-      template: '<div class="colBox" resizable="true" ng-controller="enemyCtrl">' +
-        '<div class="colBoxInner" ng-transclude></div>' +
+      controller: 'enemyCtrl',
+      template: '<div class="colBox" resizable="true">' +
+        '<div class="colBoxInner"></div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -89,9 +109,9 @@ angular.module('mudApp.mainView')
   .directive('global', function() {
     return {
       restrict: 'E',
-      transclude: true,
-      template: '<div class="colBox" resizable="true" ng-controller="globalCtrl">' +
-        '<div class="colBoxInner" ng-transclude></div>' +
+      controller: 'globalCtrl',
+      template: '<div class="colBox" resizable="true">' +
+        '<div class="colBoxInner"></div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -101,9 +121,9 @@ angular.module('mudApp.mainView')
   .directive('char', function() {
     return {
       restrict: 'E',
-      transclude: true,
-      template: '<div class="colBox" resizable="true" ng-controller="charCtrl">' +
-        '<div class="colBoxInner" ng-transclude></div>' +
+      controller: 'charCtrl',
+      template: '<div class="colBox" resizable="true">' +
+        '<div class="colBoxInner"></div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -113,9 +133,9 @@ angular.module('mudApp.mainView')
   .directive('inv', function() {
     return {
       restrict: 'E',
-      transclude: true,
-      template: '<div class="colBox" resizable="true" ng-controller="invCtrl">' +
-        '<div class="colBoxInner" ng-transclude></div>' +
+      controller: 'invCtrl',
+      template: '<div class="colBox" resizable="true">' +
+        '<div class="colBoxInner"></div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -125,9 +145,9 @@ angular.module('mudApp.mainView')
   .directive('ownstatus', function() {
     return {
       restrict: 'E',
-      transclude: true,
-      template: '<div class="colBox" resizable="true" ng-controller="ownstatusCtrl">' +
-        '<div class="colBoxInner" ng-transclude></div>' +
+      controller: 'ownstatusCtrl',
+      template: '<div class="colBox" resizable="true">' +
+        '<div class="colBoxInner"></div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -137,9 +157,9 @@ angular.module('mudApp.mainView')
   .directive('enemystatus', function() {
     return {
       restrict: 'E',
-      transclude: true,
-      template: '<div class="colBox" resizable="true" ng-controller="enemystatusCtrl">' +
-        '<div class="colBoxInner" ng-transclude></div>' +
+      controller: 'enemystatusCtrl',
+      template: '<div class="colBox" resizable="true">' +
+        '<div class="colBoxInner"></div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -149,7 +169,8 @@ angular.module('mudApp.mainView')
   .directive('worldmap', function() {
     return {
       restrict: 'E',
-      template: '<div id="worldmapCont" ng-controller="worldmapCtrl">' +
+      controller: 'worldmapCtrl',
+      template: '<div id="worldmapCont">' +
         '<div id="worldmapBox"></div>' +
         '</div>',
       link: function(scope, element, attrs) {
