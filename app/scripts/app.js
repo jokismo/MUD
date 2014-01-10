@@ -6,7 +6,8 @@ angular.module('mudApp',
       , 'mudApp.auth'
       , 'mudApp.mainView'
       , 'firebase'
-      , 'ngRoute']
+      , 'ngRoute'
+      , 'ui.bootstrap']
   )
 
   // Views Config
@@ -25,6 +26,12 @@ angular.module('mudApp',
     $routeProvider.otherwise({redirectTo: '/'});
   }])
 
+  .config(['$tooltipProvider', function ($tooltipProvider) {
+    $tooltipProvider.options({
+      appendToBody: true
+    });
+  }])
+
   // App Config Check
   .run(['FBURL', function(FBURL) {
     if( FBURL === 'https://INSTANCE.firebaseio.com' ) {
@@ -33,12 +40,20 @@ angular.module('mudApp',
   }])
 
   // Init
-  .run(['loginService', '$rootScope', 'FBURL', '$location', function(loginService, $rootScope, FBURL, $location) {
+  .run(['loginService', '$rootScope', 'FBURL', '$location', '$document', function(loginService, $rootScope, FBURL, $location, $document) {
     $rootScope.auth = loginService.init('/login');
     $rootScope.FBURL = FBURL;
-    $rootScope.data = {};
+    $rootScope.data = {
+      uiSettings: {},
+      reloadUi: true
+    };
+    // Prevent Select
+    $document.bind('selectstart', function(event) {
+      event.preventDefault();
+    });
+    // Reload app at logout to clear binding
     $rootScope.$on('$firebaseAuth:logout', function() {
-      $location.path('/login');
+      $location.url('/login');
     });
   }]);
 

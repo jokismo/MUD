@@ -2,41 +2,109 @@
 <div id="colContainer" class="fullHeight">
 
   <quests class="colBox"
-          ng-controller="questCtrl"
-          ng-show="data.uiSettings.quests.show"
-          resizable
-          draggable
-          load-settings>
+    ng-controller="questCtrl"
+    ng-show="data.uiSettings.quests.show"
+    resizable
+    draggable
+    load-settings>
   </quests>
 
   <menubar class="colBox"
-          ng-controller="menubarCtrl"
-          ng-show="data.uiSettings.menubar.show"
-          draggable
-          load-settings>
+    ng-controller="menubarCtrl"
+    ng-show="data.uiSettings.menubar.show"
+    draggable
+    load-settings>
   </menubar>
 
   <npcs class="colBox"
-           ng-controller="npcCtrl"
-           ng-show="data.uiSettings.npcs.show"
-           draggable
-           resizable
-           load-settings>
+    ng-controller="npcCtrl"
+    ng-show="data.uiSettings.npcs.show"
+    draggable
+    resizable
+    load-settings>
   </npcs>
 
   <target class="colBox"
-        ng-controller="targetCtrl"
-        draggable
-        resizable
-        load-settings>
+    ng-controller="targetCtrl"
+    draggable
+    resizable
+    load-settings>
   </target>
 
   <chat class="colBox"
-          ng-controller="chatCtrl"
-          ng-show="data.uiSettings.chat.show"
-          draggable
-          resizable
-          load-settings>
+    ng-controller="chatCtrl"
+    ng-show="data.uiSettings.chat.show"
+    draggable
+    resizable
+    load-settings>
   </chat>
+
+  <battle class="colBox"
+    ng-controller="battleCtrl"
+    draggable
+    resizable
+    load-settings>
+  </battle>
+
+  <party class="colBox"
+    ng-controller="partyCtrl"
+    ng-show="data.uiSettings.party.show"
+    draggable
+    resizable
+    load-settings>
+  </party>
+
+  <enemy class="colBox"
+    ng-controller="enemyCtrl"
+    draggable
+    resizable
+    load-settings>
+  </enemy>
+
+  <global class="colBox"
+    ng-controller="globalCtrl"
+    ng-show="data.uiSettings.global.show"
+    draggable
+    resizable
+    load-settings>
+  </global>
+
+  <char class="colBox"
+    ng-controller="charCtrl"
+    ng-show="data.uiSettings.char.show"
+    draggable
+    resizable
+    load-settings>
+  </char>
+
+  <inv class="colBox"
+    ng-controller="invCtrl"
+    ng-show="data.uiSettings.inv.show"
+    draggable
+    resizable
+    load-settings>
+  </inv>
+
+  <ownstatus class="colBox"
+    ng-controller="ownStatusCtrl"
+    draggable
+    resizable
+    load-settings>
+  </ownstatus>
+
+  <enemystatus class="colBox"
+    ng-controller="enemyStatusCtrl"
+    draggable
+    resizable
+    load-settings>
+  </enemystatus>
+
+  <worldmap id="worldmapCont"
+    ng-controller="worldmapCtrl"
+    ng-show="data.uiSettings.worldmap.show"
+    draggable
+    ng-click="moveChar($event)"
+    load-settings>
+  </worldmap>
 
 </div>

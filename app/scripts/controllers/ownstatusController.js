@@ -2,6 +2,6 @@
 
 angular.module('mudApp.mainView')
 
-  .controller('ownstatusCtrl', ['$scope', 'loginService', 'settingsService', function($scope, loginService, settingsService) {
+  .controller('ownStatusCtrl', ['$scope', 'loginService', 'settingsService', function($scope, loginService, settingsService) {
 
   }]);

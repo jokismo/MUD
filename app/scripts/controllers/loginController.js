@@ -2,7 +2,19 @@
 
 angular.module('mudApp.auth')
 
-  .controller('LoginCtrl', ['$scope', 'loginService', function($scope, loginService) {
+  .controller('LoginCtrl', ['$scope', 'loginService', '$route', function($scope, loginService) {
+
+    function isEmpty(obj) {
+      return Object.keys(obj).length === 0;
+    }
+
+    if (!isEmpty($scope.data.uiSettings)) {
+      window.location.reload();
+    }
+
+    $scope.data = {
+      uiSettings: {}
+    };
 
     $scope.email = null;
     $scope.pass = null;

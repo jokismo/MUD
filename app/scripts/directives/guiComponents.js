@@ -60,7 +60,7 @@ angular.module('mudApp.mainView')
       restrict: 'E',
       template: '<div>' +
           '<div class="colBoxInner btn-group">' +
-            '<button class="btn btn-default" ng-repeat="window in windows" ng-click="toggleWindow(window.directiveName)">' +
+            '<button class="btn btn-primary" ng-repeat="window in windows" ng-click="toggleWindow(window.directiveName)">' +
               '<span class="{{window.display}}" tooltip="{{window.tooltip}}"></span>' +
             '</button>' +
           '</div>' +
@@ -73,9 +73,10 @@ angular.module('mudApp.mainView')
   .directive('battle', function() {
     return {
       restrict: 'E',
-      controller: 'battleCtrl',
-      template: '<div class="colBox" resizable="true">' +
-        '<div class="colBoxInner"></div>' +
+      template: '<div>' +
+          '<div class="colBoxInner">' +
+            'BATTLE' +
+          '</div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -85,9 +86,10 @@ angular.module('mudApp.mainView')
   .directive('party', function() {
     return {
       restrict: 'E',
-      controller: 'partyCtrl',
-      template: '<div class="colBox" resizable="true">' +
-        '<div class="colBoxInner"></div>' +
+      template: '<div>' +
+          '<div class="colBoxInner">' +
+            'PARTY' +
+          '</div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -97,9 +99,10 @@ angular.module('mudApp.mainView')
   .directive('enemy', function() {
     return {
       restrict: 'E',
-      controller: 'enemyCtrl',
-      template: '<div class="colBox" resizable="true">' +
-        '<div class="colBoxInner"></div>' +
+      template: '<div>' +
+          '<div class="colBoxInner">' +
+            'ENEMY' +
+          '</div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -109,9 +112,10 @@ angular.module('mudApp.mainView')
   .directive('global', function() {
     return {
       restrict: 'E',
-      controller: 'globalCtrl',
-      template: '<div class="colBox" resizable="true">' +
-        '<div class="colBoxInner"></div>' +
+      template: '<div>' +
+          '<div class="colBoxInner">' +
+            'GLOBAL' +
+          '</div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -121,9 +125,10 @@ angular.module('mudApp.mainView')
   .directive('char', function() {
     return {
       restrict: 'E',
-      controller: 'charCtrl',
-      template: '<div class="colBox" resizable="true">' +
-        '<div class="colBoxInner"></div>' +
+      template: '<div>' +
+          '<div class="colBoxInner">' +
+            'CHAR' +
+          '</div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -133,9 +138,10 @@ angular.module('mudApp.mainView')
   .directive('inv', function() {
     return {
       restrict: 'E',
-      controller: 'invCtrl',
-      template: '<div class="colBox" resizable="true">' +
-        '<div class="colBoxInner"></div>' +
+      template: '<div>' +
+          '<div class="colBoxInner">' +
+            'INV' +
+          '</div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -145,9 +151,10 @@ angular.module('mudApp.mainView')
   .directive('ownstatus', function() {
     return {
       restrict: 'E',
-      controller: 'ownstatusCtrl',
-      template: '<div class="colBox" resizable="true">' +
-        '<div class="colBoxInner"></div>' +
+      template: '<div>' +
+          '<div class="colBoxInner">' +
+            'OWN STATUS' +
+          '</div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -157,9 +164,10 @@ angular.module('mudApp.mainView')
   .directive('enemystatus', function() {
     return {
       restrict: 'E',
-      controller: 'enemystatusCtrl',
-      template: '<div class="colBox" resizable="true">' +
-        '<div class="colBoxInner"></div>' +
+      template: '<div>' +
+          '<div class="colBoxInner">' +
+            'ENEMY STATUS' +
+          '</div>' +
         '</div>',
       link: function(scope, element, attrs) {
       }
@@ -169,8 +177,7 @@ angular.module('mudApp.mainView')
   .directive('worldmap', function() {
     return {
       restrict: 'E',
-      controller: 'worldmapCtrl',
-      template: '<div id="worldmapCont">' +
+      template: '<div>' +
         '<div id="worldmapBox"></div>' +
         '</div>',
       link: function(scope, element, attrs) {

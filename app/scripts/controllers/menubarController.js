@@ -13,17 +13,32 @@ angular.module('mudApp.mainView')
       {
         directiveName : 'npcs',
         display: 'glyphicon glyphicon-star',
-        tooltip: 'Quests'
+        tooltip: 'Npc Dialogue'
       },
       {
         directiveName : 'chat',
         display: 'glyphicon glyphicon-star',
-        tooltip: 'Quests'
+        tooltip: 'Chat Window'
       },
       {
-        directiveName : 'chat',
+        directiveName : 'global',
         display: 'glyphicon glyphicon-star',
-        tooltip: 'Quests'
+        tooltip: 'Global Info'
+      },
+      {
+        directiveName : 'char',
+        display: 'glyphicon glyphicon-star',
+        tooltip: 'Character Info'
+      },
+      {
+        directiveName : 'inv',
+        display: 'glyphicon glyphicon-star',
+        tooltip: 'Inventory'
+      },
+      {
+        directiveName : 'worldmap',
+        display: 'glyphicon glyphicon-star',
+        tooltip: 'Map'
       }
     ];
 
