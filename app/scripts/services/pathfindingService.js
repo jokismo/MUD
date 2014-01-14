@@ -2,16 +2,16 @@
 
 angular.module('mudApp.mainView')
 
-  .factory('pathFindingService', ['getBind', function(getBind) {
+  .factory('pathFindingService', ['getBind', '$q', function(getBind, $q) {
 
     return {
 
       initGrid: function(data) {
-        var numCols = data.cols * 6,
-            numRows = data.rows * 6,
-            matrix = this.buildMatrix(data.nodes, data.cols, data.rows);
-        this.grid = new PF.Grid(numCols, numRows, matrix);
-        console.log(this.grid);
+        this.buildMatrix(data.nodes, data.cols, data.rows);
+        this.finder = new PF.AStarFinder({
+          allowDiagonal: true,
+          dontCrossCorners: true
+        });
       },
 
       setWalkableAt: function(gridX, gridY, walkable) {
@@ -56,7 +56,7 @@ angular.module('mudApp.mainView')
               } else {
                 isWalkable([[j,k]], 1);
               }
-            } else if ((k + 1) % 6 === 0 && j % 2 === 0) {
+            } else if ((k + 1) % 6 === 0 && (j % 6 === 0 || (j - 2) % 6 === 0)) {
               isWalkable([[j,k]], 0);
             } else {
               isWalkable([[j,k]], 1);
@@ -113,7 +113,104 @@ angular.module('mudApp.mainView')
           }
           startR += 6;
         }
+        this.grid = new PF.Grid(numCols, numRows, matrix);
+      },
 
+      pathFind: function(start, end) {
+        var startCoords, endCoords, gridCopy, path,
+          deferred = $q.defer();
+        startCoords = this.mapCoordsToMatrix(start);
+        endCoords = this.mapCoordsToMatrix(end);
+        gridCopy = this.grid.clone();
+        path = this.finder.findPath(startCoords[1], startCoords[0], endCoords[1], endCoords[0], gridCopy);
+        this.pathToMapCoords(path, deferred);
+        return deferred.promise;
+      },
+
+      mapCoordsToMatrix: function(mapArray) {
+        var modifiedCoords = [];
+        mapArray.forEach(function(val, ind, arr) {
+          modifiedCoords[ind] = 2 + (6 * ((arr[ind] - 1) / 2));
+        });
+        return modifiedCoords;
+      },
+
+      pathToMapCoords: function(path, promise) {
+        var mapArray = [], isMain, straight, lastNode, index,
+          i = 0,
+          lastCoordIsMain = true;
+
+        function isStraightPath(to, from) {
+          var straightPath = {
+            isStraight: false,
+            value: []
+          };
+          straightPath.value[0] = to[0];
+          straightPath.value[1] = to[1];
+          if (to[1] === from[1]) {
+            straightPath.isStraight = true;
+            straightPath.value[0] += to[0] - from[0];
+          } else if (to[0] === from[0]) {
+            straightPath.isStraight = true;
+            straightPath.value[1] += to[1] - from[1];
+          }
+          return straightPath;
+        }
+
+        function diagVal(to, from) {
+          var dirX = -1,
+            dirY = -1,
+            newVal = [];
+
+          if (to[0] - from[0] > 0) {
+            dirX = 1;
+          }
+          if (to[1] - from[1] > 0) {
+            dirY = 1;
+          }
+          newVal[0] = to[0] + dirX * 3;
+          newVal[1] = to[1] + dirY * 3;
+
+          return newVal;
+        }
+
+        function toMapCoord(val) {
+
+          var newVal = [];
+          newVal[0] = (val[0] - ((val[0] - 2) / 3)) / 2;
+          newVal[1] = (val[1] - ((val[1] - 2) / 3)) / 2;
+          return newVal;
+        }
+
+        path.forEach(function(val, ind, arr) {
+          if ((val[0] + 1) % 3 === 0 && (val[1] + 1) % 3 === 0) {
+            isMain = ((val[1] + 4) % 6 === 0) && ((val[0] + 1) % 6 !== 0);
+            if (!isMain && !lastCoordIsMain) {
+              lastNode = mapArray[i-1];
+              index = arr.indexOf(lastNode);
+              straight = isStraightPath(lastNode, arr[index - 3]);
+              if (straight.isStraight) {
+                mapArray.push(straight.value);
+                i++;
+              } else {
+                mapArray.push(diagVal(lastNode, arr[index - 2]));
+                i++;
+              }
+            } else {
+              lastCoordIsMain = isMain;
+            }
+            i++;
+            mapArray.push(val);
+          }
+        });
+
+
+        mapArray.forEach(function(val, ind) {
+          var newVal = toMapCoord(val);
+          mapArray[ind] = newVal;
+        });
+
+        promise.resolve(mapArray);
       }
 
 
