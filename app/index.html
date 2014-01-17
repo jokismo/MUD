@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="mudApp" ng-class="data.uiSettings.header">
+  <body ng-app="mudApp">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -53,7 +53,7 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
-    <script src="https://cdn.firebase.com/libs/angularfire/0.5.0/angularfire.min.js"></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/0.6.0/angularfire.min.js"></script>
     <script src="bower_components/sass-bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
@@ -69,12 +69,15 @@
     <script src="scripts/app.js"></script>
     <script src="scripts/config.js"></script>
     <script src="scripts/services/authServices.js"></script>
+    <script src="scripts/services/charService.js"></script>
     <script src="scripts/services/firebaseServices.js"></script>
     <script src="scripts/services/guiServices.js"></script>
+    <script src="scripts/services/presenceService.js"></script>
     <script src="scripts/services/worldmapService.js"></script>
     <script src="scripts/services/pathfindingService.js"></script>
     <script src="scripts/controllers/battleController.js"></script>
     <script src="scripts/controllers/charController.js"></script>
+    <script src="scripts/controllers/charSelectController.js"></script>
     <script src="scripts/controllers/chatController.js"></script>
     <script src="scripts/controllers/enemyController.js"></script>
     <script src="scripts/controllers/enemystatusController.js"></script>

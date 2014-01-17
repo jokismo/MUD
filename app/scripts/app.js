@@ -5,6 +5,7 @@ angular.module('mudApp',
     ['mudApp.config'
       , 'mudApp.auth'
       , 'mudApp.mainView'
+      , 'mudApp.backendServices'
       , 'firebase'
       , 'ngRoute'
       , 'ui.bootstrap']
@@ -13,7 +14,6 @@ angular.module('mudApp',
   // Views Config
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/', {
-      authRequired: true,
       templateUrl: 'views/main.html',
       controller: 'GuiCtrl'
     });
@@ -40,24 +40,30 @@ angular.module('mudApp',
   }])
 
   // Init
-  .run(['loginService', '$rootScope', 'FBURL', '$location', '$document', function(loginService, $rootScope, FBURL, $location, $document) {
-    $rootScope.auth = loginService.init('/login');
+  .run(['loginService', '$rootScope', 'FBURL', '$location', '$document', 'presenceService', function(loginService, $rootScope, FBURL, $location, $document, presenceService) {
+    $rootScope.auth = loginService.init();
     $rootScope.FBURL = FBURL;
     $rootScope.data = {
       uiSettings: {},
-      reloadUi: true
+      isMobile: (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent)
     };
     // Prevent Select
     $document.bind('selectstart', function(event) {
       event.preventDefault();
     });
-    // Reload app at logout to clear binding
-    $rootScope.$on('$firebaseAuth:logout', function() {
+
+    $rootScope.$on('$firebaseSimpleLogin:logout', function() {
+      $rootScope.data.uiSettings = {};
       $location.url('/login');
+    });
+    $rootScope.$on('$firebaseSimpleLogin:login', function() {
+      $rootScope.$broadcast('loggedIn');
+      presenceService.init($rootScope.auth.user.id);
     });
   }]);
 
 angular.module('mudApp.config', []);
 angular.module('mudApp.firebaseServices', []);
+angular.module('mudApp.backendServices', []);
 angular.module('mudApp.auth', ['mudApp.firebaseServices']);
 angular.module('mudApp.mainView', ['mudApp.firebaseServices']);

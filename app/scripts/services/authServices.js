@@ -3,108 +3,49 @@
 
   angular.module('mudApp.auth')
 
-    .service('waitForAuth', function($rootScope, $q, $timeout) {
-      var def = $q.defer(), subs = [];
-      function fn() {
-        for(var i=0; i < subs.length; i++) { subs[i](); }
-        $timeout(function() {
-          // force $scope.$apply to be re-run after login resolves
-          def.resolve();
-        });
-      }
-      subs.push($rootScope.$on('$firebaseAuth:login', fn));
-      subs.push($rootScope.$on('$firebaseAuth:logout', fn));
-      subs.push($rootScope.$on('$firebaseAuth:error', fn));
-      return def.promise;
-    })
-
-    .factory('loginService', ['$rootScope', '$firebaseAuth', 'firebaseRef', 'profileCreator', '$timeout', '$location',
-      function($rootScope, $firebaseAuth, firebaseRef, profileCreator, $timeout, $location) {
-        var auth = null;
-        function assertAuth() {
-          if( auth === null ) { throw new Error('Must call loginService.init() before using its methods'); }
-        }
+    .factory('loginService', ['$rootScope', '$firebaseSimpleLogin', 'firebaseRef', '$timeout', '$location', 'presenceService',
+      function($rootScope, $firebaseSimpleLogin, firebaseRef,  $timeout, $location, presenceService) {
+        var auth;
         return {
-          init: function(path) {
-
-            return auth = $firebaseAuth(firebaseRef(), {path: path});
+          init: function() {
+            return auth = $firebaseSimpleLogin(firebaseRef());
           },
 
-          /**
-           * @param {string} email
-           * @param {string} pass
-           * @param {Function} [callback]
-           * @returns {*}
-           */
-          login: function(email, pass, redirect, callback) {
-            assertAuth();
+          login: function(email, pass) {
             auth.$login('password', {
               email: email,
               password: pass,
               rememberMe: true
-            }).then(function(user) {
-                if( redirect ) {
-                  $location.path(redirect);
-                }
-                callback && callback(null, user);
-              }, callback);
+            }).then(function() {
+                $location.path('/');
+              });
           },
 
-          logout: function(redirect) {
-            assertAuth();
-            auth.$logout();
-            if( redirect ) {
-              $location.path(redirect);
-            }
-          },
-
-          changePassword: function(opts) {
-            assertAuth();
-            var cb = opts.callback || function() {};
-            if( !opts.oldpass || !opts.newpass ) {
-              $timeout(function(){ cb('Please enter a password'); });
-            }
-            else if( opts.newpass !== opts.confirm ) {
-              $timeout(function() { cb('Passwords do not match'); });
-            }
-            else {
-              auth.$changePassword(opts.email, opts.oldpass, opts.newpass, cb);
-            }
+          logout: function() {
+            presenceService.logout(function() {
+              auth.$logout();
+            });
           },
 
           createAccount: function(email, pass, callback) {
-            assertAuth();
-            auth.$createUser(email, pass, callback);
+            var promise = auth.$createUser(email, pass);
+            return promise;
           },
 
-          createProfile: profileCreator
-        };
-
-      }])
-
-    .factory('profileCreator', ['firebaseRef', '$timeout', function(firebaseRef, $timeout) {
-      return function(id, email, callback) {
-
-        function firstPartOfEmail(email) {
-          return ucfirst(email.substr(0, email.indexOf('@'))||'');
-        }
-
-        function ucfirst (str) {
-          str += '';
-          var f = str.charAt(0).toUpperCase();
-          return f + str.substr(1);
-        }
-
-        firebaseRef('users/'+id).set({email: email, name: firstPartOfEmail(email)}, function(err) {
-          //err && console.error(err);
-          if( callback ) {
-            $timeout(function() {
-              callback(err);
+          createProfile: function(email, uid) {
+            var userRef = firebaseRef(['users', uid]);
+            userRef.set({
+              email: email
+            }, function(err) {
+              if(err) {
+                console.log(err);
+              } else {
+                $location.path('/');
+              }
             });
           }
-        });
+        };
 
-      };
-    }]);
+      }]);
 
 })();

@@ -2,13 +2,20 @@
 
 angular.module('mudApp.mainView')
 
-  .controller('GuiCtrl', ['$scope', 'loginService', 'settingsService', '$timeout', '$route', function($scope, loginService, settingsService, $timeout, $route) {
+  .controller('GuiCtrl', ['$scope', '$timeout', function($scope, $timeout) {
+
+    $scope.guiData = {};
+    $scope.guiData.charSelect = {
+      done: false,
+      charSelect: true,
+      charCreate: false
+    };
 
     Mousetrap.bind('esc', showHeader);
 
     function showHeader() {
       $scope.$apply(function() {
-        $scope.data.uiSettings.header.showHeader = !$scope.data.uiSettings.header.showHeader;
+        $scope.guiData.showHeader = !$scope.guiData.showHeader;
       });
     }
 
@@ -16,7 +23,20 @@ angular.module('mudApp.mainView')
       return Object.keys(obj).length === 0;
     }
 
-    if ($scope.auth.user !== null) {
+    $scope.$on('GuiReady', function(event) {
+      event.stopPropagation();
+      $scope.guiData.charSelect = {
+        done: true,
+        charSelect: true,
+        charCreate: false
+      };
+      $scope.$broadcast('loadGui');
+
+    });
+
+    /** if ($scope.auth.user !== null) {
+
+      presenceService.init($scope.auth.user.uid);
 
       settingsService.init($scope.auth.user.uid);
 
@@ -39,7 +59,7 @@ angular.module('mudApp.mainView')
 
       });
 
-    }
+    }**/
 
 
-}]);
+  }]);

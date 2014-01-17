@@ -32,32 +32,33 @@ angular.module('mudApp.mainView')
 
       });
 
-      $scope.moveChar = function($event) {
-        if ($event.target.tagName === 'path' && $event.target.dataset.mainNode === "true" && $event.target.dataset.mapNode !== worldmapService.currentNodeElem) {
-          if ($scope.moving) {
-            $timeout.cancel(worldmapService.timeout);
-            if (worldmapService.currentNode.node.dataset.mainNode !== 'true') {
-              var lastNode = worldmapService.nodeToArray($scope.lastNode);
-              worldmapService.setCurrentNode(lastNode[0], lastNode[1], false);
-            }
-            worldmapService.moving = false;
+    });
+
+    $scope.moveChar = function($event) {
+      if ($event.target.tagName === 'path' && $event.target.dataset.mainNode === "true" && $event.target.dataset.mapNode !== worldmapService.currentNodeElem) {
+        if ($scope.moving) {
+          $timeout.cancel(worldmapService.timeout);
+          if (worldmapService.currentNode.node.dataset.mainNode !== 'true') {
+            var lastNode = worldmapService.nodeToArray($scope.lastNode);
+            worldmapService.setCurrentNode(lastNode[0], lastNode[1], false);
           }
-          var coords = worldmapService.pathFindCoords($event.target.dataset.mapNode);
-          var path = pathFindingService.pathFind(coords[0], coords[1]);
-          path.then(function(path) {
-            worldmapService.moving = true;
-            worldmapService.moveChar(path);
-          });
+          worldmapService.moving = false;
         }
-      };
+        var coords = worldmapService.pathFindCoords($event.target.dataset.mapNode);
+        var path = pathFindingService.pathFind(coords[0], coords[1]);
+        path.then(function(path) {
+          worldmapService.moving = true;
+          worldmapService.moveChar(path);
+        });
+      }
+    };
 
-      $scope.$watch('mapService.currentNodeElem', function(newvalue, oldvalue) {
-        $scope.lastNode = oldvalue;
-      });
+    $scope.$watch('mapService.currentNodeElem', function(newvalue, oldvalue) {
+      $scope.lastNode = oldvalue;
+    });
 
-      $scope.$watch('mapService.moving', function(moving) {
-        $scope.moving = moving;
-      });
+    $scope.$watch('mapService.moving', function(moving) {
+      $scope.moving = moving;
     });
 
 

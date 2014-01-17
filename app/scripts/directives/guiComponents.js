@@ -183,4 +183,54 @@ angular.module('mudApp.mainView')
       link: function(scope, element, attrs) {
       }
     };
+  })
+
+  .directive('charselect', function() {
+    return {
+      restrict: 'E',
+      template: '' +
+        '<div>' +
+          '<div class="colBoxInner">' +
+            '<div ng-show="!newHouseNav.show">' +
+              '<div ng-repeat="(factionId, houseData) in charData">{{factions[factionId].name}}' +
+                '<div ng-repeat="(houseId, house) in houseData">' +
+                  '<button ng-click="showChars(house.name, factionId)">{{house.name}}</button>' +
+                  '<div ng-show="house.name === showHouse">' +
+                    '<div ng-repeat="(charId, char) in house.chars">' +
+                      '<div ng-click="selectedChar(houseId, charId, char.nick, $index)">' +
+                        '<span ng-show="char.nick !== \'notSet\'">{{char.nick}}</span>' +
+                        '{{char.firstName}}{{char.lastName}}{{$index}}<br>{{char.stats}}' +
+                      '</div>' +
+                      '<form novalidate name="nickForm" ng-show="createNickIndex === $index">' +
+                        '<input type="text" ng-model="nickName.name" name="nickName" required> {{nickName.name}}' +
+                        '<p ng-show="nickForm.nickName.$dirty && nickForm.nickName.$error.required">Name is Empty</p>' +
+                        '<button ng-show="!nickName.nickCreateUpdate" ng-disabled="nickForm.$invalid" ng-click="createNick(houseId, charId)">Create Nick and Load</button>{{nickName.nickCreateErr}}' +
+                        '<div ng-show="nickName.nickCreateUpdate">{{nickName.nickCreateUpdate}}</div>' +
+                        '<div ng-show="nickName.nickCreateErr">{{nickName.nickCreateErr}}</div>' +
+                      '</form>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<button ng-click="showHouseCreate(true, \'one\')" ng-show="!newHouseNav.show">New House</button>' +
+            '<button ng-click="showHouseCreate(false)" ng-show="newHouseNav.show && newHouseNav.step === \'one\'">House List</button>' +
+            '<button ng-click="showHouseCreate(true, \'one\')" ng-show="newHouseNav.show && newHouseNav.step === \'two\'">Faction List</button>' +
+            '<div ng-show="newHouseNav.show">' +
+              '<div ng-show="newHouseNav.step === \'one\'"><div ng-repeat="faction in factions" ng-click="createHouse(faction.name, $index)">{{faction.name}}</div></div>' +
+              '<div ng-show="newHouseNav.step === \'two\'">' +
+                '<form novalidate name="houseForm">' +
+                  '<input type="text" ng-model="newHouse.name" name="houseName" required><p>Faction: {{newHouse.factionId}}</p><p>House of {{newHouse.name}}</p>' +
+                  '<p ng-show="houseForm.houseName.$dirty && houseForm.houseName.$error.required">Name is Empty</p>' +
+                  '<button ng-show="!charCreateUpdate" ng-disabled="houseForm.$invalid" ng-click="saveHouse()">Create House</button>' +
+                  '<div ng-show="charCreateUpdate">{{charCreateUpdate}}</div>' +
+                  '<div ng-show="charCreateErr">{{charCreateErr}}</div>' +
+                '</form>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>',
+      link: function(scope, element, attrs) {
+      }
+    };
   });

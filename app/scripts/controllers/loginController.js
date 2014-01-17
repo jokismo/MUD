@@ -4,61 +4,20 @@ angular.module('mudApp.auth')
 
   .controller('LoginCtrl', ['$scope', 'loginService', '$route', function($scope, loginService) {
 
-    function isEmpty(obj) {
-      return Object.keys(obj).length === 0;
-    }
+    $scope.login = {};
+    $scope.newUser = {};
 
-    if (!isEmpty($scope.data.uiSettings)) {
-      window.location.reload();
-    }
-
-    $scope.data = {
-      uiSettings: {}
+    $scope.logIn = function(login, pass) {
+      loginService.login(login, pass);
     };
 
-    $scope.email = null;
-    $scope.pass = null;
-    $scope.confirm = null;
-    $scope.createMode = false;
-
-    $scope.login = function(callback) {
-      $scope.err = null;
-      if( !$scope.email ) {
-        $scope.err = 'Please enter an email address';
-      }
-      else if( !$scope.pass ) {
-        $scope.err = 'Please enter a password';
-      }
-      else {
-        loginService.login($scope.email, $scope.pass,'/', function(err, user) {
-          $scope.err = err? err + '' : null;
-          typeof(callback) === 'function' && callback(err, user);
-        });
-      }
-    };
-
-    $scope.createAccount = function() {
-      if( !$scope.email ) {
-        $scope.err = 'Please enter an email address';
-      }
-      else if( !$scope.pass ) {
-        $scope.err = 'Please enter a password';
-      }
-      else if( $scope.pass !== $scope.confirm ) {
-        $scope.err = 'Passwords do not match';
-      }
-      else {
-        loginService.createAccount($scope.email, $scope.pass, function(err, user) {
-          if( err ) {
-            $scope.err = err? err + '' : null;
-          }
-          else {
-            $scope.login(function(err) {
-              if( !err ) {
-                loginService.createProfile(user.uid, user.email);
-              }
-            });
-          }
+    $scope.createUser = function() {
+      if ($scope.newUser.pass === $scope.newUser.passConfirm) {
+        var promise = loginService.createAccount($scope.newUser.email, $scope.newUser.pass);
+        promise.then(function() {
+          loginService.createProfile($scope.newUser.email, $scope.auth.user.id);
+        }, function(err) {
+          console.log(err);
         });
       }
     };

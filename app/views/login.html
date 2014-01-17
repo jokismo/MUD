@@ -1,25 +1,31 @@
 <div id="colContainer" class="fullHeight">
 
-  <h2>Account Management</h2>
+  <h2>login</h2>
 
-  <form>
+  <form novalidate name="loginForm">
       <label>
           <span>email</span>
-          <input type="text" ng-model="email" />
+          <input type="email" ng-model="login.email" required/>
       </label>
       <label>
           <span>password</span>
-          <input type="password" ng-model="pass" />
+          <input type="password" ng-model="login.pass" required/>
       </label>
-      <label ng-cloak ng-show="createMode">
-          <span>confirm pass</span>
-          <input type="password" ng-model="confirm" />
-      </label>
-      <button ng-click="login()" ng-hide="createMode">Log In</button>
-      <button ng-click="createMode = true" ng-hide="createMode">Create Account</button>
-      <button ng-cloak ng-show="createMode" ng-click="createAccount()">Ready to Create</button>
-      <button ng-cloak ng-show="createMode" ng-click="createMode = false">Cancel</button>
-
-      <p ng-show="err" class="error">{{err}}</p>
+      <button ng-click="logIn(login.email, login.pass)">Log In</button>
+  </form>
+  <form novalidate name="newActForm">
+    <label>
+      <span>email</span>
+      <input type="email" ng-model="newUser.email" />
+    </label>
+    <label>
+      <span>password</span>
+      <input type="password" ng-model="newUser.pass" />
+    </label>
+    <label>
+      <span>confirm pass</span>
+      <input type="password" ng-model="newUser.passConfirm" />
+    </label>
+    <button ng-disabled="form.$invalid" ng-click="createUser()">Log In</button>
   </form>
 </div>

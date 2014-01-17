@@ -82,7 +82,6 @@ angular.module('mudApp.mainView')
         posX = 0,
         posY = 0,
         k = 0,
-        mainRowId = 0,
         pathString = ['M', 'L', 'L', 'L', 'Z'],
         slope = (10.5 / Math.sin(45)),
         offsetA = ((Math.sqrt((slope * slope) - (10.5 * 10.5))) / 3) * nodeSize,
@@ -235,6 +234,7 @@ angular.module('mudApp.mainView')
         }
 
         var timeout = $timeout(move, 250);
+        this.setTimeout(timeout);
 
       },
 

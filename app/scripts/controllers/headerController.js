@@ -6,10 +6,6 @@ angular.module('mudApp.mainView')
 
     $scope.showSettings = false;
 
-    $scope.data.uiSettings.header = {
-      showHeader : true
-    };
-
     $scope.logout = function() {
       loginService.logout();
     };
@@ -36,7 +32,7 @@ angular.module('mudApp.mainView')
     };
 
     $scope.hide = function() {
-      $scope.data.uiSettings.header.showHeader = false;
+      $scope.guiData.showHeader = false;
     };
 
   }]);

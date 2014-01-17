@@ -1,0 +1,47 @@
+{
+  "rules": {
+    "chars" : {
+      ".read": "auth != null",
+      "$char" : {
+        ".write" : "data.val() == null || data.child('user').val() == auth.id"
+      }
+    },
+    "charsByName" : {
+      ".read": "auth != null",
+      "$char" : {
+        ".write" : "data.val() == null"
+      }
+    },
+    "factions" : {
+      ".read": "auth != null",
+      ".write": false
+    },
+    "houses" : {
+      ".read": "auth != null",
+      "$faction" : {
+        "$house" : {
+          ".write" : "data.val() == null || data.child('user').val() == auth.id"
+        }
+      }
+    },
+    "housesByName" : {
+      ".read": "auth != null",
+      "$house" : {
+        ".write" : "data.val() == null"
+      }
+    },
+    "maps" : {
+      ".read": "auth != null",
+      ".write": false
+    },
+    "users" : {
+      "$user" : {
+        ".read": "$user == auth.id",
+        ".write" : "data.val() == null || $user == auth.id",
+        "houses" : {
+          ".read" : "auth != null"
+        }
+      }
+    }
+  }
+}

@@ -1,110 +1,133 @@
 <header data-ng-include="'views/header.html'"></header>
-<div id="colContainer" class="fullHeight">
+<div id="colContainer" class="fullHeight">{{auth.user}}
 
   <quests class="colBox"
     ng-controller="questCtrl"
-    ng-show="data.uiSettings.quests.show"
+    ng-show="guiData.charSelect.done && data.uiSettings.quests.show"
     resizable
     draggable
-    load-settings>
+    load-size
+    load-position>
   </quests>
 
   <menubar class="colBox"
     ng-controller="menubarCtrl"
-    ng-show="data.uiSettings.menubar.show"
+    ng-show="guiData.charSelect.done && data.uiSettings.menubar.show"
     draggable
-    load-settings>
+    load-position>
   </menubar>
 
   <npcs class="colBox"
     ng-controller="npcCtrl"
-    ng-show="data.uiSettings.npcs.show"
+    ng-show="guiData.charSelect.done && data.uiSettings.npcs.show"
     draggable
     resizable
-    load-settings>
+    load-size
+    load-position>
   </npcs>
 
   <target class="colBox"
     ng-controller="targetCtrl"
+    ng-show="guiData.charSelect.done"
     draggable
     resizable
-    load-settings>
+    load-size
+    load-position>
   </target>
 
   <chat class="colBox"
     ng-controller="chatCtrl"
-    ng-show="data.uiSettings.chat.show"
+    ng-show="guiData.charSelect.done && data.uiSettings.chat.show"
     draggable
     resizable
-    load-settings>
+    load-size
+    load-position>
   </chat>
 
   <battle class="colBox"
     ng-controller="battleCtrl"
+    ng-show="guiData.charSelect.done"
     draggable
     resizable
-    load-settings>
+    load-size
+    load-position>
   </battle>
 
   <party class="colBox"
     ng-controller="partyCtrl"
-    ng-show="data.uiSettings.party.show"
+    ng-show="guiData.charSelect.done && data.uiSettings.party.show"
     draggable
     resizable
-    load-settings>
+    load-size
+    load-position>
   </party>
 
   <enemy class="colBox"
     ng-controller="enemyCtrl"
+    ng-show="guiData.charSelect.done"
     draggable
     resizable
-    load-settings>
+    load-size
+    load-position>
   </enemy>
 
   <global class="colBox"
     ng-controller="globalCtrl"
-    ng-show="data.uiSettings.global.show"
+    ng-show="guiData.charSelect.done && data.uiSettings.global.show"
     draggable
     resizable
-    load-settings>
+    load-size
+    load-position>
   </global>
 
   <char class="colBox"
     ng-controller="charCtrl"
-    ng-show="data.uiSettings.char.show"
+    ng-show="guiData.charSelect.done && data.uiSettings.char.show"
     draggable
     resizable
-    load-settings>
+    load-size
+    load-position>
   </char>
 
   <inv class="colBox"
     ng-controller="invCtrl"
-    ng-show="data.uiSettings.inv.show"
+    ng-show="guiData.charSelect.done && data.uiSettings.inv.show"
     draggable
     resizable
-    load-settings>
+    load-size
+    load-position>
   </inv>
 
   <ownstatus class="colBox"
     ng-controller="ownStatusCtrl"
+    ng-show="guiData.charSelect.done"
     draggable
     resizable
-    load-settings>
+    load-size
+    load-position>
   </ownstatus>
 
   <enemystatus class="colBox"
     ng-controller="enemyStatusCtrl"
+    ng-show="guiData.charSelect.done"
     draggable
     resizable
-    load-settings>
+    load-size
+    load-position>
   </enemystatus>
 
   <worldmap id="worldmapCont"
     ng-controller="worldmapCtrl"
-    ng-show="data.uiSettings.worldmap.show"
+    ng-show="guiData.charSelect.done && data.uiSettings.worldmap.show"
     draggable
     ng-click="moveChar($event)"
-    load-settings>
+    load-position>
   </worldmap>
+
+  <div id="prelogin" ng-show="!guiData.charSelect.done" ng-controller="CharSelectCtrl">
+    <charselect class="colBox"
+        ng-show="guiData.charSelect.charSelect">
+    </charselect>
+  </div>
 
 </div>

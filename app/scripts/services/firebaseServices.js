@@ -4,28 +4,15 @@
 
   angular.module('mudApp.firebaseServices')
 
-  // a simple utility to create references to Firebase paths
     .factory('firebaseRef', ['Firebase', 'FBURL', function(Firebase, FBURL) {
-      /**
-       * @function
-       * @name firebaseRef
-       * @param {String|Array...} path
-       * @return a Firebase instance
-       */
+
       return function() {
         return new Firebase(pathRef([FBURL].concat(Array.prototype.slice.call(arguments))));
       };
     }])
 
-    // a simple utility to create $firebase objects from angularFire
     .service('getBind', ['$firebase', 'firebaseRef', function($firebase, firebaseRef) {
-      /**
-       * @function
-       * @name syncData
-       * @param {String|Array...} path
-       * @param {int} [limit]
-       * @return a Firebase instance
-       */
+
       return function(path, limit) {
         var ref = firebaseRef(path);
         limit && (ref = ref.limit(limit));
