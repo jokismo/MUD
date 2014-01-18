@@ -8,6 +8,7 @@ angular.module('mudApp',
       , 'mudApp.backendServices'
       , 'firebase'
       , 'ngRoute'
+      , 'ngResource'
       , 'ui.bootstrap']
   )
 
@@ -32,13 +33,6 @@ angular.module('mudApp',
     });
   }])
 
-  // App Config Check
-  .run(['FBURL', function(FBURL) {
-    if( FBURL === 'https://INSTANCE.firebaseio.com' ) {
-      angular.element(document.body).html('<h1>Config Error</h1>');
-    }
-  }])
-
   // Init
   .run(['loginService', '$rootScope', 'FBURL', '$location', '$document', 'presenceService', function(loginService, $rootScope, FBURL, $location, $document, presenceService) {
     $rootScope.auth = loginService.init();
@@ -51,14 +45,19 @@ angular.module('mudApp',
     $document.bind('selectstart', function(event) {
       event.preventDefault();
     });
-
+    // Auth Related
     $rootScope.$on('$firebaseSimpleLogin:logout', function() {
-      $rootScope.data.uiSettings = {};
+      presenceService.isAuth(false);
       $location.url('/login');
     });
     $rootScope.$on('$firebaseSimpleLogin:login', function() {
-      $rootScope.$broadcast('loggedIn');
       presenceService.init($rootScope.auth.user.id);
+      $location.url('/');
+    });
+    $rootScope.$on('$routeChangeStart', function(event, next) {
+      if (!presenceService.userAuth && next.templateUrl !== 'views/login.html') {
+        $location.path('/login');
+      }
     });
   }]);
 

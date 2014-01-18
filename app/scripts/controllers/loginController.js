@@ -2,13 +2,15 @@
 
 angular.module('mudApp.auth')
 
-  .controller('LoginCtrl', ['$scope', 'loginService', '$route', function($scope, loginService) {
+  .controller('LoginCtrl', ['$scope', 'loginService', '$route', '$resource', 'firebaseRef', function($scope, loginService, $route, $resource, firebaseRef) {
 
     $scope.login = {};
     $scope.newUser = {};
+    $scope.data.uiSettings = {};
+    $scope.data.currentChar = {};
 
     $scope.logIn = function(login, pass) {
-      loginService.login(login, pass);
+      loginService.login(login, pass, ip.ip);
     };
 
     $scope.createUser = function() {
@@ -21,4 +23,16 @@ angular.module('mudApp.auth')
         });
       }
     };
+
+    var ip = {
+      ip : ''
+    };
+    var ipGet = $resource('http://api.hostip.info/get_json.php');
+    ip = ipGet.get();
+
+    firebaseRef('authCheck').once('value', function() {
+      console.log('auth');
+    }, function(err) {
+      console.log('err');
+    })
   }]);

@@ -2,7 +2,7 @@
 
 angular.module('mudApp.mainView')
 
-  .service('worldmapService', ['getBind', '$timeout', function(getBind, $timeout) {
+  .factory('worldmapService', ['getBind', '$timeout', function(getBind, $timeout) {
 
     return {
 

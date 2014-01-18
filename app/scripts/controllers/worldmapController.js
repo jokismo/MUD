@@ -3,7 +3,7 @@
 angular.module('mudApp.mainView')
 
   .controller('worldmapCtrl', ['$scope', '$timeout', 'worldmapService', 'pathFindingService', function($scope, $timeout, worldmapService, pathFindingService) {
-
+    /**
     $scope.worldmapdata = {};
     $scope.mapService = worldmapService;
     $scope.moving = false;
@@ -60,6 +60,6 @@ angular.module('mudApp.mainView')
     $scope.$watch('mapService.moving', function(moving) {
       $scope.moving = moving;
     });
-
+    **/
 
   }]);

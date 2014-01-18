@@ -11,13 +11,15 @@
             return auth = $firebaseSimpleLogin(firebaseRef());
           },
 
-          login: function(email, pass) {
+          login: function(email, pass, ip) {
             auth.$login('password', {
               email: email,
               password: pass,
               rememberMe: true
-            }).then(function() {
-                $location.path('/');
+            }).then(function(user) {
+                if(ip) {
+                  presenceService.setIp(user.id, ip);
+                }
               });
           },
 
@@ -27,9 +29,8 @@
             });
           },
 
-          createAccount: function(email, pass, callback) {
-            var promise = auth.$createUser(email, pass);
-            return promise;
+          createAccount: function(email, pass) {
+            return auth.$createUser(email, pass);
           },
 
           createProfile: function(email, uid) {

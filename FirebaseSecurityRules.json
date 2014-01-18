@@ -1,10 +1,15 @@
 {
   "rules": {
+    ".read": "root.child('admins').child('auth.id').exists()",
+    ".write" : "root.child('admins').child('auth.id').exists() && root.child('admins').child('auth.id').child('superAdmin').val() === true",
     "chars" : {
       ".read": "auth != null",
       "$char" : {
         ".write" : "data.val() == null || data.child('user').val() == auth.id"
       }
+    },
+    "authCheck" : {
+      ".read": "auth != null"
     },
     "charsByName" : {
       ".read": "auth != null",
@@ -33,6 +38,12 @@
     "maps" : {
       ".read": "auth != null",
       ".write": false
+    },
+    "onlineChars" : {
+      ".read": "auth != null",
+      "$char" : {
+        ".write" : "data.val() == null || data.child('user').val() == auth.id"
+      }
     },
     "users" : {
       "$user" : {

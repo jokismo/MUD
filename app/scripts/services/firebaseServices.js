@@ -11,7 +11,7 @@
       };
     }])
 
-    .service('getBind', ['$firebase', 'firebaseRef', function($firebase, firebaseRef) {
+    .factory('getBind', ['$firebase', 'firebaseRef', function($firebase, firebaseRef) {
 
       return function(path, limit) {
         var ref = firebaseRef(path);

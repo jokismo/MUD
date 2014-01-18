@@ -17,45 +17,36 @@ angular.module('mudApp.backendServices')
         houseDbRef = houseDbRef.push({
           user: uid,
           name: houseData.name
-        });
-        houseId = houseDbRef.name();
+        }, checkName);
 
-        function dataLoaded(deferred) {
-          if (houseId !== "") {
-            deferred.notify('Checking for Duplicate Name');
-            houseNameRef.transaction(function(currentData) {
-              if (currentData === null) {
-                return { id: houseId };
-              } else {
-                houseDbRef.remove();
-                deferred.reject(houseData.name + ' is taken.');
-              }
-            }, function(error, committed) {
-              if (committed && !error) {
-                deferred.notify('Populating House');
-                houseRef.child(houseId).set({
-                  factionName: houseData.faction,
-                  name: houseData.name
-                });
-                populateHouse(houseId, houseData.name, uid, houseRef, deferred);
-              }
-            });
-
-          } else {
-            $timeout(function() {
-              dataLoaded(deferred);
-            }, 0);
-          }
+        function checkName() {
+          houseId = houseDbRef.name();
+          deferred.notify('Checking for Duplicate Name');
+          houseNameRef.transaction(function(currentData) {
+            if (currentData === null) {
+              return { id: houseId };
+            } else {
+              houseDbRef.remove();
+              deferred.reject(houseData.name + ' is taken.');
+            }
+          }, function(error, committed) {
+            if (committed && !error) {
+              deferred.notify('Populating House');
+              houseRef.child(houseId).set({
+                factionName: houseData.faction,
+                name: houseData.name
+              });
+              populateHouse(houseId, houseData.name, uid, houseRef, deferred);
+            }
+          });
         }
-        $timeout(function() {
-          dataLoaded(deferred);
-        }, 0);
 
         return deferred.promise;
       },
 
       populateHouse: function(houseId, houseName, uid, houseRef, deferred) {
-        var newDbRef,
+        var newDbRef = [],
+          i,
           charId = [],
           charRef = houseRef.child(houseId + '/chars');
         var charDbRef = firebaseRef('chars');
@@ -79,37 +70,35 @@ angular.module('mudApp.backendServices')
           return Math.random() * x | 0;
         }
 
-        chars.forEach(function(element, index) {
-          chars[index].firstName = firstNames[random(3)];
-          chars[index].lastName = lastNames[random(3)];
+        for (i = 0; i < 3; i++) {
+          chars[i].firstName = firstNames[random(3)];
+          chars[i].lastName = lastNames[random(3)];
           statNames.forEach(function(element) {
             stats[element] = random(20);
           });
-          chars[index].stats = JSON.parse(JSON.stringify(stats));
-          chars[index].user = uid;
-          chars[index].houseId = houseId;
-          chars[index].houseName = houseName;
-          chars[index].nick = 'notSet';
-          newDbRef = charDbRef.push(chars[index]);
-          charId[index] = newDbRef.name();
-        });
-
-        function dataLoaded() {
-          if (typeof charId[2] !== 'undefined') {
-            chars.forEach(function(element, index) {
-              charRef.child(charId[index]).set({
-                firstName: chars[index].firstName,
-                lastName: chars[index].lastName,
-                nick: 'notSet',
-                stats: chars[index].stats
-              });
-            });
-            deferred.resolve();
-          } else {
-            $timeout(dataLoaded, 0);
-          }
+          chars[i].stats = JSON.parse(JSON.stringify(stats));
+          chars[i].user = uid;
+          chars[i].houseId = houseId;
+          chars[i].houseName = houseName;
+          chars[i].nick = 'notSet';
+          newDbRef[i] = charDbRef.push(chars[i]);
+          charId[i] = newDbRef[i].name();
         }
-        $timeout(dataLoaded, 0);
+
+        saveChars();
+
+        function saveChars() {
+          chars.forEach(function(element, index) {
+            charRef.child(charId[index]).set({
+              firstName: chars[index].firstName,
+              lastName: chars[index].lastName,
+              nick: 'notSet',
+              stats: chars[index].stats
+            });
+          });
+          deferred.resolve();
+        }
+
       },
 
       createNick: function(uid, factionId, houseId, charId, nick) {

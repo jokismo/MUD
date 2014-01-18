@@ -11,7 +11,7 @@ angular.module('mudApp.mainView')
     if ($scope.auth.user) {
       $scope.charData = getBind(['users', $scope.auth.user.id, 'houses']);
     } else {
-      $scope.$on('loggedIn', function() {
+      $scope.$on('$firebaseSimpleLogin:login', function() {
         $scope.charData = getBind(['users', $scope.auth.user.id, 'houses']);
       });
     }
@@ -51,19 +51,23 @@ angular.module('mudApp.mainView')
     };
 
     $scope.saveHouse = function() {
-      $scope.charCreateUpdate = 'Checking for Duplicate Name';
+      charCreateMessages('Checking for Duplicate Name', null);
       var promise = charService.newHouse($scope.newHouse, $scope.auth.user.id);
       promise.then(function() {
-        $scope.charCreateUpdate = false;
-        $scope.charCreateErr = false;
+        $scope.newHouse.name = '';
+        charCreateMessages(false, false);
         $scope.showHouseCreate(false, 'one');
       }, function(reason) {
-        $scope.charCreateUpdate = false;
-        $scope.charCreateErr = reason;
+        charCreateMessages(false, reason);
       }, function(update) {
-        $scope.charCreateUpdate = update;
+        charCreateMessages(update, null);
       });
     };
+
+    function charCreateMessages(update, error) {
+      $scope.charCreateUpdate = update;
+      $scope.charCreateErr = error;
+    }
 
     $scope.selectedChar = function(houseId, charId, charNick, index) {
       $scope.nickName.name = '';
@@ -82,26 +86,30 @@ angular.module('mudApp.mainView')
     };
 
     $scope.createNick = function(houseId, charId) {
-      $scope.nickName.nickCreateUpdate = 'Checking for Duplicate Name';
+      nickCreateMessages('Checking for Duplicate Name', null);
       var promise = charService.createNick($scope.auth.user.id, $scope.factionId, houseId, charId, $scope.nickName.name);
       promise.then(function(uiSettings) {
         setCurrentChar(houseId, charId, $scope.nickName.name);
-        $scope.nickName.nickCreateUpdate = false;
-        $scope.nickName.nickCreateErr = false;
+        presenceService.charOnline($scope.data.currentChar);
+        nickCreateMessages(false, false);
         $scope.data.uiSettings = angular.copy(uiSettings);
         $scope.$emit('GuiReady');
       }, function(reason) {
-        $scope.nickName.nickCreateUpdate = false;
-        $scope.nickName.nickCreateErr = reason;
+        nickCreateMessages(false, reason);
       }, function(deferred) {
-        $scope.nickName.nickCreateUpdate = 'Setting up UI';
+        nickCreateMessages('Setting up UI', null);
         settingsService.initUser(deferred, $scope.auth.user.id, $scope.factionId, houseId, charId, $scope.data.isMobile);
       });
     };
 
+    function nickCreateMessages(update, error) {
+      $scope.nickName.nickCreateUpdate = update;
+      $scope.nickName.nickCreateErr = error;
+    }
+
     function setCurrentChar(houseId, charId, charName) {
       $scope.data.currentChar = {
-        factionId:  angular.copy($scope.factionId),
+        factionId: angular.copy($scope.factionId),
         houseId: houseId,
         charId: charId,
         charName: angular.copy(charName)

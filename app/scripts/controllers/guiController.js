@@ -2,7 +2,13 @@
 
 angular.module('mudApp.mainView')
 
-  .controller('GuiCtrl', ['$scope', '$timeout', function($scope, $timeout) {
+  .controller('GuiCtrl', ['$scope', '$timeout', '$location', function($scope, $timeout, $location) {
+
+    $timeout(function() {
+      if ($scope.auth.user === null) {
+
+      }
+    });
 
     $scope.guiData = {};
     $scope.guiData.charSelect = {
