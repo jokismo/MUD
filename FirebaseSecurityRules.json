@@ -1,15 +1,17 @@
 {
   "rules": {
-    ".read": "root.child('admins').child('auth.id').exists()",
-    ".write" : "root.child('admins').child('auth.id').exists() && root.child('admins').child('auth.id').child('superAdmin').val() === true",
+    ".read": "root.child('admins').child(auth.id).exists()",
+    ".write" : "root.child('admins').child(auth.id).exists() && root.child('admins').child(auth.id).child('superAdmin').val() === true",
+    "authCheck" : {
+      "normalAuth": {
+        ".read": "auth != null"
+      }
+    },
     "chars" : {
       ".read": "auth != null",
       "$char" : {
         ".write" : "data.val() == null || data.child('user').val() == auth.id"
       }
-    },
-    "authCheck" : {
-      ".read": "auth != null"
     },
     "charsByName" : {
       ".read": "auth != null",

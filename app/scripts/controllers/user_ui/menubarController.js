@@ -2,7 +2,7 @@
 
 angular.module('mudApp.mainView')
 
-  .controller('menubarCtrl', ['$scope', 'loginService', 'settingsService', function($scope, loginService, settingsService) {
+  .controller('MenubarCtrl', ['$scope', function($scope) {
 
     $scope.windows = [
       {

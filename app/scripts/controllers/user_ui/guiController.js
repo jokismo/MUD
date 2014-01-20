@@ -2,7 +2,7 @@
 
 angular.module('mudApp.mainView')
 
-  .controller('GuiCtrl', ['$scope', '$timeout', '$location', function($scope, $timeout, $location) {
+  .controller('GuiCtrl', ['$scope', '$timeout', function($scope, $timeout) {
 
     $timeout(function() {
       if ($scope.auth.user === null) {
@@ -12,9 +12,7 @@ angular.module('mudApp.mainView')
 
     $scope.guiData = {};
     $scope.guiData.charSelect = {
-      done: false,
-      charSelect: true,
-      charCreate: false
+      done: false
     };
 
     Mousetrap.bind('esc', showHeader);

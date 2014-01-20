@@ -2,12 +2,12 @@
 
 angular.module('mudApp.mainView')
 
-  .controller('HeaderCtrl', ['$scope', 'loginService', function($scope, loginService) {
+  .controller('HeaderCtrl', ['$scope', 'authService', '$location', function($scope, authService, $location) {
 
     $scope.showSettings = false;
 
     $scope.logout = function() {
-      loginService.logout();
+      authService.logout();
     };
 
     $scope.settings = function() {
@@ -29,6 +29,14 @@ angular.module('mudApp.mainView')
 
     $scope.toggleSnap = function() {
       $scope.data.uiSettings.guisettings.snap = !$scope.data.uiSettings.guisettings.snap;
+    };
+
+    $scope.hideCurrentPage = function(page) {
+      if ($location.path() === page) {
+        return true;
+      } else {
+        return false;
+      }
     };
 
     $scope.hide = function() {

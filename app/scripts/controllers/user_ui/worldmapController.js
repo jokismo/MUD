@@ -2,7 +2,7 @@
 
 angular.module('mudApp.mainView')
 
-  .controller('worldmapCtrl', ['$scope', '$timeout', 'worldmapService', 'pathFindingService', function($scope, $timeout, worldmapService, pathFindingService) {
+  .controller('WorldmapCtrl', ['$scope', '$timeout', 'worldmapService', 'pathFindingService', function($scope, $timeout, worldmapService, pathFindingService) {
     /**
     $scope.worldmapdata = {};
     $scope.mapService = worldmapService;

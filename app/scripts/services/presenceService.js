@@ -2,23 +2,39 @@
 
 angular.module('mudApp.backendServices')
 
-  .factory('presenceService', ['firebaseRef', 'Firebase', function(firebaseRef, Firebase) {
+  .factory('presenceService', ['firebaseRef', 'Firebase', '$q', function(firebaseRef, Firebase, $q) {
 
     return {
 
-      isAuth: function(auth) {
-        this.userAuth = auth;
+      init: function(uid) {
+        var deferred = $q.defer();
+        this.uid = uid;
+        this.checkAdmin(deferred);
+        return deferred.promise;
       },
 
-      init: function(uid) {
-        this.uid = uid;
-        this.isAuth(true);
+      userIsAuth: function() {
+        var deferred = $q.defer();
+
+        firebaseRef(['authCheck', 'normalAuth']).once('value', function() {
+          deferred.resolve();
+        }, function() {
+          deferred.reject();
+        });
+        return deferred.promise;
+      },
+
+      checkAdmin: function(deferred) {
+        firebaseRef(['authCheck', 'adminAuth']).once('value', function() {
+          deferred.resolve(true);
+        }, function() {
+          deferred.resolve(false);
+        });
       },
 
       setIp: function(uid, ip) {
         firebaseRef(['users', uid, 'ipList'])
           .push(ip);
-        console.log(ip);
       },
 
       charOnline: function(currentChar) {
@@ -52,7 +68,6 @@ angular.module('mudApp.backendServices')
       logout: function(callback) {
         var uid = this.uid;
         var onlineChars = this.onlineChars;
-        this.isAuth(false);
 
         if (this.playTime) {
           this.playTime.child('lastLogout').set(Firebase.ServerValue.TIMESTAMP, setCharStatus);

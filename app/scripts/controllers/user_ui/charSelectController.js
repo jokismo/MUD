@@ -2,17 +2,17 @@
 
 angular.module('mudApp.mainView')
 
-  .controller('CharSelectCtrl', ['$scope', 'getBind', 'charService', 'settingsService', 'firebaseRef', 'presenceService', function($scope, getBind, charService, settingsService, firebaseRef, presenceService) {
+  .controller('CharSelectCtrl', ['$scope', 'firebaseBind', 'charService', 'settingsService', 'firebaseRef', 'presenceService', function($scope, firebaseBind, charService, settingsService, firebaseRef, presenceService) {
 
     firebaseRef('factions').once('value', function(data) {
       $scope.factions = data.val();
     });
     $scope.charData = {};
     if ($scope.auth.user) {
-      $scope.charData = getBind(['users', $scope.auth.user.id, 'houses']);
+      $scope.charData = firebaseBind(['users', $scope.auth.user.id, 'houses']);
     } else {
       $scope.$on('$firebaseSimpleLogin:login', function() {
-        $scope.charData = getBind(['users', $scope.auth.user.id, 'houses']);
+        $scope.charData = firebaseBind(['users', $scope.auth.user.id, 'houses']);
       });
     }
 
@@ -52,11 +52,11 @@ angular.module('mudApp.mainView')
 
     $scope.saveHouse = function() {
       charCreateMessages('Checking for Duplicate Name', null);
-      var promise = charService.newHouse($scope.newHouse, $scope.auth.user.id);
-      promise.then(function() {
-        $scope.newHouse.name = '';
-        charCreateMessages(false, false);
-        $scope.showHouseCreate(false, 'one');
+      charService.newHouse($scope.newHouse, $scope.auth.user.id)
+        .then(function() {
+          $scope.newHouse.name = '';
+          charCreateMessages(false, false);
+          $scope.showHouseCreate(false, 'one');
       }, function(reason) {
         charCreateMessages(false, reason);
       }, function(update) {
@@ -75,10 +75,10 @@ angular.module('mudApp.mainView')
       if (charNick !== 'notSet') {
         setCurrentChar(houseId, charId, charNick);
         presenceService.charOnline($scope.data.currentChar);
-        var promise = settingsService.getSettings($scope.auth.user.id, $scope.factionId, houseId, charId, $scope.data.isMobile);
-        promise.then(function(data) {
-          $scope.data.uiSettings = data;
-          $scope.$emit('GuiReady');
+        settingsService.getSettings($scope.auth.user.id, $scope.factionId, houseId, charId, $scope.data.isMobile)
+          .then(function(data) {
+            $scope.data.uiSettings = data;
+            $scope.$emit('GuiReady');
         });
       } else {
         $scope.createNickIndex = index;
@@ -87,13 +87,13 @@ angular.module('mudApp.mainView')
 
     $scope.createNick = function(houseId, charId) {
       nickCreateMessages('Checking for Duplicate Name', null);
-      var promise = charService.createNick($scope.auth.user.id, $scope.factionId, houseId, charId, $scope.nickName.name);
-      promise.then(function(uiSettings) {
-        setCurrentChar(houseId, charId, $scope.nickName.name);
-        presenceService.charOnline($scope.data.currentChar);
-        nickCreateMessages(false, false);
-        $scope.data.uiSettings = angular.copy(uiSettings);
-        $scope.$emit('GuiReady');
+      charService.createNick($scope.auth.user.id, $scope.factionId, houseId, charId, $scope.nickName.name)
+        .then(function(uiSettings) {
+          setCurrentChar(houseId, charId, $scope.nickName.name);
+          presenceService.charOnline($scope.data.currentChar);
+          nickCreateMessages(false, false);
+          $scope.data.uiSettings = angular.copy(uiSettings);
+          $scope.$emit('GuiReady');
       }, function(reason) {
         nickCreateMessages(false, reason);
       }, function(deferred) {

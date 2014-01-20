@@ -2,7 +2,7 @@
 
 angular.module('mudApp.mainView')
 
-  .factory('pathFindingService', ['getBind', '$q', function(getBind, $q) {
+  .factory('pathFindingService', ['$q', function($q) {
 
     return {
 

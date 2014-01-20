@@ -3,7 +3,7 @@
 
   angular.module('mudApp.auth')
 
-    .factory('loginService', ['$rootScope', '$firebaseSimpleLogin', 'firebaseRef', '$timeout', '$location', 'presenceService',
+    .factory('authService', ['$rootScope', '$firebaseSimpleLogin', 'firebaseRef', '$timeout', '$location', 'presenceService',
       function($rootScope, $firebaseSimpleLogin, firebaseRef,  $timeout, $location, presenceService) {
         var auth;
         return {

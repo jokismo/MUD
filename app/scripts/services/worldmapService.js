@@ -2,13 +2,13 @@
 
 angular.module('mudApp.mainView')
 
-  .factory('worldmapService', ['getBind', '$timeout', function(getBind, $timeout) {
+  .factory('worldmapService', ['firebaseBind', '$timeout', function(firebaseBind, $timeout) {
 
     return {
 
       getData: function(mapname) {
         var link = ['maps', mapname];
-        return getBind(link);
+        return firebaseBind(link);
       },
 
       initView: function(data) {

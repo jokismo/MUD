@@ -14,17 +14,21 @@ angular.module('mudApp',
 
   // Views Config
   .config(['$routeProvider', function($routeProvider) {
-    $routeProvider.when('/', {
-      templateUrl: 'views/main.html',
-      controller: 'GuiCtrl'
-    });
+    $routeProvider
+      .when('/', {
+        templateUrl: 'views/main.html',
+        controller: 'GuiCtrl'
+      })
+      .when('/admin', {
+        templateUrl: 'views/main.html',
+        controller: 'GuiCtrl'
+      })
+      .when('/login', {
+        templateUrl: 'views/login.html',
+        controller: 'LoginCtrl'
+      })
+      .otherwise({redirectTo: '/'});
 
-    $routeProvider.when('/login', {
-      templateUrl: 'views/login.html',
-      controller: 'LoginCtrl'
-    });
-
-    $routeProvider.otherwise({redirectTo: '/'});
   }])
 
   .config(['$tooltipProvider', function ($tooltipProvider) {
@@ -34,8 +38,8 @@ angular.module('mudApp',
   }])
 
   // Init
-  .run(['loginService', '$rootScope', 'FBURL', '$location', '$document', 'presenceService', function(loginService, $rootScope, FBURL, $location, $document, presenceService) {
-    $rootScope.auth = loginService.init();
+  .run(['authService', '$rootScope', 'FBURL', '$location', '$document', 'presenceService', function(authService, $rootScope, FBURL, $location, $document, presenceService) {
+    $rootScope.auth = authService.init();
     $rootScope.FBURL = FBURL;
     $rootScope.data = {
       uiSettings: {},
@@ -46,17 +50,25 @@ angular.module('mudApp',
       event.preventDefault();
     });
     // Auth Related
+
     $rootScope.$on('$firebaseSimpleLogin:logout', function() {
-      presenceService.isAuth(false);
-      $location.url('/login');
+      $location.path('/login');
     });
     $rootScope.$on('$firebaseSimpleLogin:login', function() {
-      presenceService.init($rootScope.auth.user.id);
-      $location.url('/');
+      presenceService.init($rootScope.auth.user.id)
+        .then(function(admin) {
+          $rootScope.data.isAdmin = admin;
+        });
+      $location.path('/');
     });
     $rootScope.$on('$routeChangeStart', function(event, next) {
-      if (!presenceService.userAuth && next.templateUrl !== 'views/login.html') {
-        $location.path('/login');
+      if (next.templateUrl !== 'views/login.html') {
+        presenceService.userIsAuth()
+          .then(function() {
+            return;
+          }, function() {
+            $location.path('/login');
+          });
       }
     });
   }]);

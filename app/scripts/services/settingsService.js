@@ -2,7 +2,7 @@
 
 angular.module('mudApp.mainView')
 
-  .factory('settingsService', ['getBind', 'firebaseRef', '$q', function(getBind, firebaseRef, $q) {
+  .factory('settingsService', ['firebaseRef', '$q', function(firebaseRef, $q) {
 
     return {
 

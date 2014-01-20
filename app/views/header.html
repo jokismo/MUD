@@ -20,6 +20,12 @@
         <li>
           <a href="" ng-click="settings()">Settings</a>
         </li>
+        <li ng-show="!hideCurrentPage('/')">
+          <a href="#/">Game</a>
+        </li>
+        <li ng-show="data.isAdmin && !hideCurrentPage('/admin')">
+          <a href="#/admin">Admin</a>
+        </li>
         <li>
           <a href="" ng-click="logout()">Logout</a>
         </li>
