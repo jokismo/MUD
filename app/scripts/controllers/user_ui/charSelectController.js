@@ -2,17 +2,22 @@
 
 angular.module('mudApp.mainView')
 
-  .controller('CharSelectCtrl', ['$scope', 'firebaseBind', 'charService', 'settingsService', 'firebaseRef', 'presenceService', function($scope, firebaseBind, charService, settingsService, firebaseRef, presenceService) {
+  .controller('CharSelectCtrl', ['$scope', 'firebaseBind', 'charService', 'uiSettingsService', 'firebaseRef', 'presenceService', function($scope, firebaseBind, charService, uiSettingsService, firebaseRef, presenceService) {
 
-    firebaseRef('factions').once('value', function(data) {
-      $scope.factions = data.val();
-    });
     $scope.charData = {};
-    if ($scope.auth.user) {
+
+    function loadAfterAuth() {
+      firebaseRef('factions').once('value', function(data) {
+        $scope.factions = data.val();
+      });
       $scope.charData = firebaseBind(['users', $scope.auth.user.id, 'houses']);
+    }
+
+    if ($scope.auth.user) {
+      loadAfterAuth();
     } else {
       $scope.$on('$firebaseSimpleLogin:login', function() {
-        $scope.charData = firebaseBind(['users', $scope.auth.user.id, 'houses']);
+        loadAfterAuth();
       });
     }
 
@@ -57,11 +62,11 @@ angular.module('mudApp.mainView')
           $scope.newHouse.name = '';
           charCreateMessages(false, false);
           $scope.showHouseCreate(false, 'one');
-      }, function(reason) {
-        charCreateMessages(false, reason);
-      }, function(update) {
-        charCreateMessages(update, null);
-      });
+        }, function(reason) {
+          charCreateMessages(false, reason);
+        }, function(update) {
+          charCreateMessages(update, null);
+        });
     };
 
     function charCreateMessages(update, error) {
@@ -75,11 +80,13 @@ angular.module('mudApp.mainView')
       if (charNick !== 'notSet') {
         setCurrentChar(houseId, charId, charNick);
         presenceService.charOnline($scope.data.currentChar);
-        settingsService.getSettings($scope.auth.user.id, $scope.factionId, houseId, charId, $scope.data.isMobile)
+        uiSettingsService.getSettings(false, $scope.auth.user.id, $scope.factionId, houseId, charId, $scope.data.isMobile)
           .then(function(data) {
             $scope.data.uiSettings = data;
             $scope.$emit('GuiReady');
-        });
+          }, function(error) {
+            console.log(error);
+          });
       } else {
         $scope.createNickIndex = index;
       }
@@ -94,12 +101,12 @@ angular.module('mudApp.mainView')
           nickCreateMessages(false, false);
           $scope.data.uiSettings = angular.copy(uiSettings);
           $scope.$emit('GuiReady');
-      }, function(reason) {
-        nickCreateMessages(false, reason);
-      }, function(deferred) {
-        nickCreateMessages('Setting up UI', null);
-        settingsService.initUser(deferred, $scope.auth.user.id, $scope.factionId, houseId, charId, $scope.data.isMobile);
-      });
+        }, function(reason) {
+          nickCreateMessages(false, reason);
+        }, function(deferred) {
+          nickCreateMessages('Setting up UI', null);
+          uiSettingsService.initUser(deferred, $scope.auth.user.id, $scope.factionId, houseId, charId, $scope.data.isMobile);
+        });
     };
 
     function nickCreateMessages(update, error) {

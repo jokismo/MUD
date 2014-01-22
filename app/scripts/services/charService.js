@@ -76,7 +76,7 @@ angular.module('mudApp.backendServices')
           statNames.forEach(function(element) {
             stats[element] = random(20);
           });
-          chars[i].stats = JSON.parse(JSON.stringify(stats));
+          chars[i].stats = angular.copy(stats);
           chars[i].user = uid;
           chars[i].houseId = houseId;
           chars[i].houseName = houseName;

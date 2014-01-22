@@ -1,27 +1,43 @@
 'use strict';
 
-angular.module('mudApp.mainView')
+angular.module('mudApp.backendServices')
 
-  .factory('settingsService', ['firebaseRef', '$q', function(firebaseRef, $q) {
+  .factory('uiSettingsService', ['firebaseRef', '$q', function(firebaseRef, $q) {
 
     return {
 
-      getSettings: function(uid, factionId, houseId, charId, isMobile) {
-        var settingsRef,
-          deferred = $q.defer();
-        if (isMobile) {
-          settingsRef = firebaseRef(['users', uid, 'houses', factionId, houseId, 'chars', charId, 'uiSettings', 'mobile']);
-        } else {
-          settingsRef = firebaseRef(['users', uid, 'houses', factionId, houseId, 'chars', charId, 'uiSettings', 'currentUi']);
-          settingsRef.once('value', function(data) {
+      settingsRef : {},
+
+      getSettings: function(isAdmin, uid, factionId, houseId, charId, isMobile) {
+        var deferred = $q.defer();
+        if(isAdmin) {
+          this.settingsRef = firebaseRef(['users', uid, 'admin', 'uiSettings']);
+          this.settingsRef.once('value', function(data) {
             deferred.resolve(data.val());
+          }, function(error) {
+            deferred.reject(error);
           });
+        } else {
+          if (isMobile) {
+            this.settingsRef = firebaseRef(['users', uid, 'houses', factionId, houseId, 'chars', charId, 'uiSettings', 'mobile']);
+          } else {
+            this.settingsRef = firebaseRef(['users', uid, 'houses', factionId, houseId, 'chars', charId, 'uiSettings', 'currentUi']);
+            this.settingsRef.once('value', function(data) {
+              deferred.resolve(data.val());
+            }, function(error) {
+              deferred.reject(error);
+            });
+          }
         }
         return deferred.promise;
       },
 
+      saveSettings: function(uiSettings) {
+        this.settingsRef.set(uiSettings);
+      },
+
       initUser: function(deferred, uid, factionId, houseId, charId, isMobile) {
-        var settingsRef, currentRef, marginY, heightY;
+        var currentRef, marginY, heightY;
         var windowWidth = window.innerWidth;
         var windowHeight = window.innerHeight;
         var uiSettings = {
@@ -77,12 +93,12 @@ angular.module('mudApp.mainView')
         };
 
         if (isMobile) {
-          settingsRef = firebaseRef(['users', uid, 'houses', factionId, houseId, 'chars', charId, 'uiSettings', 'mobile']);
+          this.settingsRef = firebaseRef(['users', uid, 'houses', factionId, houseId, 'chars', charId, 'uiSettings', 'mobile']);
         } else {
-          settingsRef = firebaseRef(['users', uid, 'houses', factionId, houseId, 'chars', charId, 'uiSettings', 'default']);
+          this.settingsRef = firebaseRef(['users', uid, 'houses', factionId, houseId, 'chars', charId, 'uiSettings', 'default']);
           currentRef =  firebaseRef(['users', uid, 'houses', factionId, houseId, 'chars', charId, 'uiSettings', 'currentUi']);
           setBroswerUi();
-          settingsRef.set(uiSettings);
+          this.settingsRef.set(uiSettings);
           currentRef.set(uiSettings, function() {
             deferred.resolve(uiSettings);
           });
@@ -149,7 +165,84 @@ angular.module('mudApp.mainView')
           uiSettings.menubar.posY = windowHeight - marginY - 50;
           uiSettings.worldmap.posY = marginY;
         }
-      }
+      },
+
+      initAdmin: function(uid) {
+        var marginY, heightY;
+        var windowWidth = window.innerWidth;
+        var windowHeight = window.innerHeight;
+        var deferred = $q.defer();
+        var uiSettings = {
+          guiSettings: {
+            draggable: true,
+            resizable: true,
+            snap: true
+          },
+          users: {
+            show: true
+          },
+          mapeditor: {
+            show: true
+          },
+          gamestatus: {
+            show: true
+          },
+          console: {
+            show: true
+          },
+          adminmap: {
+            show: true,
+            posX: 'init'
+          },
+          adminbar: {
+            show: true,
+            posX: 'init'
+          }
+        };
+
+        this.settingsRef = firebaseRef(['users', uid, 'admin', 'uiSettings']);
+        setBroswerUi();
+        this.settingsRef.set(uiSettings, function(error) {
+          if (error) {
+            deferred.reject(error);
+          } else {
+            deferred.resolve();
+          }
+        });
+
+        function setBroswerUi() {
+          if (windowHeight < 855) {
+            marginY = (windowHeight * 0.03) | 0;
+            heightY = (windowHeight * 0.29) | 0;
+          } else {
+            marginY = 25;
+            heightY = 250;
+          }
+
+          var cols = {
+            left: ['users', 'gamestatus'],
+            right: ['mapeditor', 'console']
+          };
+
+          cols['left'].forEach(function(element, index) {
+            uiSettings[element].posY = ((marginY * (index + 1)) + (heightY * index));
+            uiSettings[element].sizeY = heightY;
+            uiSettings[element].posX = marginY;
+            uiSettings[element].sizeX = 250;
+          });
+
+          cols['right'].forEach(function(element, index) {
+            uiSettings[element].posY = ((marginY * (index + 1)) + (heightY * index));
+            uiSettings[element].sizeY = heightY;
+            uiSettings[element].posX = windowWidth - 250 - marginY;
+            uiSettings[element].sizeX = 250;
+          });
+
+          uiSettings.adminbar.posY = windowHeight - marginY - 50;
+          uiSettings.adminmap.posY = marginY;
+        }
+        return deferred.promise;
+    }
 
     };
   }]);

@@ -28,7 +28,7 @@ module.exports = function (grunt) {
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       js: {
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
+        files: ['<%= yeoman.app %>/scripts/**/*.js'],
         // tasks: ['newer:jshint:all'],
         options: {
           livereload: true
@@ -99,7 +99,7 @@ module.exports = function (grunt) {
       },
       all: [
         'Gruntfile.js',
-        '<%= yeoman.app %>/scripts/{,*/}*.js'
+        '<%= yeoman.app %>/scripts/**/*.js'
       ],
       test: {
         options: {
@@ -252,7 +252,7 @@ module.exports = function (grunt) {
 
     // Allow the use of non-minsafe AngularJS files. Automatically makes it
     // minsafe compatible so Uglify does not destroy the ng references
-    ngmin: {
+    /**ngmin: {
       dist: {
         files: [{
           expand: true,
@@ -261,8 +261,7 @@ module.exports = function (grunt) {
           dest: '.tmp/concat/scripts'
         }]
       }
-    },
-
+    },**/
     // Replace Google CDN references
     cdnify: {
       dist: {
@@ -312,7 +311,6 @@ module.exports = function (grunt) {
       ],
       dist: [
         'compass:dist',
-        'imagemin',
         'svgmin'
       ]
     },
@@ -386,7 +384,7 @@ module.exports = function (grunt) {
     'concurrent:dist',
     'autoprefixer',
     'concat',
-    'ngmin',
+    'imagemin',
     'copy:dist',
     'cdnify',
     'cssmin',

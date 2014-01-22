@@ -33,8 +33,12 @@ angular.module('mudApp.backendServices')
       },
 
       setIp: function(uid, ip) {
-        firebaseRef(['users', uid, 'ipList'])
-          .push(ip);
+        var ipLink = ip.replace(/\./g,'');
+        firebaseRef(['users', uid, 'ipList', ipLink])
+          .set({
+            ip: ip,
+            login: Firebase.ServerValue.TIMESTAMP
+          });
       },
 
       charOnline: function(currentChar) {

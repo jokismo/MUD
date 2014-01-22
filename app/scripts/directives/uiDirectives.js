@@ -8,15 +8,15 @@ angular.module('mudApp.mainView')
       link: function(scope, element, attrs) {
         var elemName = element.prop("tagName").toLowerCase(),
           options = {
-          handles: "all",
-          containment: "document",
-          stop: function(event, ui) {
-            scope.$apply(function() {
-              scope.data.uiSettings[elemName].sizeX = ui.size.width;
-              scope.data.uiSettings[elemName].sizeY = ui.size.height;
-            });
-          }
-        };
+            handles: "all",
+            containment: "document",
+            stop: function(event, ui) {
+              scope.$apply(function() {
+                scope.data.uiSettings[elemName].sizeX = ui.size.width;
+                scope.data.uiSettings[elemName].sizeY = ui.size.height;
+              });
+            }
+          };
         scope.$on('loadGui', function() {
           element.resizable(options);
           scope.$watch('data.uiSettings.guiSettings.resizable', function() {
@@ -37,15 +37,15 @@ angular.module('mudApp.mainView')
       link: function(scope, element, attrs) {
         var elemName = element.prop("tagName").toLowerCase(),
           options = {
-          snap: true,
-          containment: "document",
-          stop: function(event, ui) {
-            scope.$apply(function() {
-              scope.data.uiSettings[elemName].posX = ui.offset.left;
-              scope.data.uiSettings[elemName].posY = ui.offset.top;
-            });
-          }
-        };
+            snap: true,
+            containment: "document",
+            stop: function(event, ui) {
+              scope.$apply(function() {
+                scope.data.uiSettings[elemName].posX = ui.offset.left;
+                scope.data.uiSettings[elemName].posY = ui.offset.top;
+              });
+            }
+          };
         scope.$on('loadGui', function() {
           element.draggable(options);
           scope.$watch('data.uiSettings.guiSettings.draggable', function() {
@@ -87,7 +87,6 @@ angular.module('mudApp.mainView')
           if (scope.data.uiSettings[elemName].posX === 'init') {
             var windowWidth = window.innerWidth;
             var elemWidth = element.width();
-            console.log(elemWidth);
             scope.data.uiSettings[elemName].posX = (windowWidth / 2) - (elemWidth / 2);
           }
           element.css({

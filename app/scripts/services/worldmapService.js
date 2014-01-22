@@ -70,12 +70,11 @@ angular.module('mudApp.mainView')
         }
       },
 
-      generateGrid : function() {
-      var i, j, l, rect, path, mainNode, oddRow, evenCol, createRowTask,
+      generateGrid: function() {
+      var i, j, l, rect, path, mainNode, oddRow, evenCol, createRowTask, paper,
         nodeSize    = this.nodeSize,
         normalStyle = this.viewStyling.nodeStyles.normal,
         data        = this.mapData,
-        paper       = this.paper,
         nodeGrid    = this.nodeGrid,
         numCols     = data.cols * 2 + 1,
         numRows     = data.rows * 2 + 1,

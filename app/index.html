@@ -48,23 +48,25 @@
     <!-- bower:js -->
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="scripts/vendor/jquery-ui-1.10.3.custom.min.js"></script>
-    <script src="http://static.firebase.com/v0/firebase.js"></script>
-    <script src="https://cdn.firebase.com/v0/firebase-simple-login.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
-    <script src="https://cdn.firebase.com/libs/angularfire/0.6.0/angularfire.min.js"></script>
     <script src="bower_components/sass-bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-resource.min.js"></script>
     <script src="scripts/vendor/raphael.min.js"></script>
     <script src="scripts/vendor/mousetrap.min.js"></script>
     <script src="scripts/vendor/pathfinding.min.js"></script>
+    <script src="scripts/vendor/mousewheel.js"></script>
 
     <!-- endbower -->
     <!-- endbuild -->
+
+    <script src="http://static.firebase.com/v0/firebase.js"></script>
+    <script src="https://cdn.firebase.com/v0/firebase-simple-login.js"></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/0.6.0/angularfire.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-resource.min.js"></script>
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
@@ -72,10 +74,20 @@
     <script src="scripts/services/authService.js"></script>
     <script src="scripts/services/charService.js"></script>
     <script src="scripts/services/firebaseServices.js"></script>
-    <script src="scripts/services/settingsService.js"></script>
+    <script src="scripts/services/uiSettingsService.js"></script>
     <script src="scripts/services/presenceService.js"></script>
     <script src="scripts/services/worldmapService.js"></script>
     <script src="scripts/services/pathfindingService.js"></script>
+    <script src="scripts/services/admin/usersService.js"></script>
+    <script src="scripts/services/admin/adminMapService.js"></script>
+    <script src="scripts/controllers/login/loginController.js"></script>
+    <script src="scripts/controllers/shared/headerController.js"></script>
+    <script src="scripts/controllers/admin/adminMapController.js"></script>
+    <script src="scripts/controllers/admin/adminController.js"></script>
+    <script src="scripts/controllers/admin/adminBarController.js"></script>
+    <script src="scripts/controllers/admin/gameStatusController.js"></script>
+    <script src="scripts/controllers/admin/mapEditorController.js"></script>
+    <script src="scripts/controllers/admin/usersController.js"></script>
     <script src="scripts/controllers/user_ui/battleController.js"></script>
     <script src="scripts/controllers/user_ui/charController.js"></script>
     <script src="scripts/controllers/user_ui/charSelectController.js"></script>
@@ -83,10 +95,8 @@
     <script src="scripts/controllers/user_ui/enemyController.js"></script>
     <script src="scripts/controllers/user_ui/enemystatusController.js"></script>
     <script src="scripts/controllers/user_ui/globalController.js"></script>
-    <script src="scripts/controllers/user_ui/guiController.js"></script>
-    <script src="scripts/controllers/shared/headerController.js"></script>
+    <script src="scripts/controllers/user_ui/uiController.js"></script>
     <script src="scripts/controllers/user_ui/invController.js"></script>
-    <script src="scripts/controllers/login/loginController.js"></script>
     <script src="scripts/controllers/user_ui/menubarController.js"></script>
     <script src="scripts/controllers/user_ui/npcController.js"></script>
     <script src="scripts/controllers/user_ui/ownstatusController.js"></script>
@@ -94,8 +104,9 @@
     <script src="scripts/controllers/user_ui/questController.js"></script>
     <script src="scripts/controllers/user_ui/targetController.js"></script>
     <script src="scripts/controllers/user_ui/worldmapController.js"></script>
-    <script src="scripts/directives/guiDirectives.js"></script>
-    <script src="scripts/directives/guiComponents.js"></script>
+    <script src="scripts/directives/userUiContainers.js"></script>
+    <script src="scripts/directives/adminUiContainers.js"></script>
+    <script src="scripts/directives/uiDirectives.js"></script>
 
     <!-- endbuild -->
 </body>

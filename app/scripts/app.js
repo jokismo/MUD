@@ -1,10 +1,10 @@
 'use strict';
 
-// Dependencies
 angular.module('mudApp',
     ['mudApp.config'
       , 'mudApp.auth'
       , 'mudApp.mainView'
+      , 'mudApp.adminView'
       , 'mudApp.backendServices'
       , 'firebase'
       , 'ngRoute'
@@ -12,16 +12,15 @@ angular.module('mudApp',
       , 'ui.bootstrap']
   )
 
-  // Views Config
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
-        controller: 'GuiCtrl'
+        controller: 'UiCtrl'
       })
       .when('/admin', {
-        templateUrl: 'views/main.html',
-        controller: 'GuiCtrl'
+        templateUrl: 'views/admin.html',
+        controller: 'AdminCtrl'
       })
       .when('/login', {
         templateUrl: 'views/login.html',
@@ -59,7 +58,7 @@ angular.module('mudApp',
         .then(function(admin) {
           $rootScope.data.isAdmin = admin;
         });
-      $location.path('/');
+      $location.path('/admin');
     });
     $rootScope.$on('$routeChangeStart', function(event, next) {
       if (next.templateUrl !== 'views/login.html') {
@@ -78,3 +77,4 @@ angular.module('mudApp.firebaseServices', []);
 angular.module('mudApp.backendServices', []);
 angular.module('mudApp.auth', ['mudApp.firebaseServices']);
 angular.module('mudApp.mainView', ['mudApp.firebaseServices']);
+angular.module('mudApp.adminView', ['mudApp.firebaseServices']);

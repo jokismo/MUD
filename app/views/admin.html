@@ -1,8 +1,57 @@
 <header data-ng-include="'views/header.html'"></header>
-<div id="colContainer" class="fullHeight">{{auth.user}}
+<div id="colContainer" class="fullHeight">
 
-  <admin></admin>
-  <worldmap></worldmap>
+  <users class="colBox"
+             ng-controller="UsersCtrl"
+             ng-show="data.uiSettings.users.show"
+             draggable
+             resizable
+             load-size
+             load-position>
+  </users>
 
+  <div ng-controller="MapEditorCtrl">
+    <mapeditor class="colBox"
+               ng-show="data.uiSettings.mapeditor.show"
+               draggable
+               resizable
+               load-size
+               load-position>
+    </mapeditor>
+
+    <adminmap id="worldmapCont"
+              ng-controller="AdminMapCtrl"
+              ng-show="data.uiSettings.adminmap.show"
+              draggable
+              load-size
+              load-position>
+    </adminmap>
+  </div>
+
+  <gamestatus class="colBox"
+               ng-controller="GameStatusCtrl"
+               ng-show="data.uiSettings.gamestatus.show"
+               draggable
+               resizable
+               load-size
+               load-position>
+  </gamestatus>
+
+
+  <adminbar class="colBox"
+              ng-controller="AdminBarCtrl"
+              draggable
+              resizable
+              load-size
+              load-position>
+  </adminbar>
+
+  <console class="colBox"
+           ng-show="data.uiSettings.console.show"
+           draggable
+           resizable
+           load-size
+           load-position>
+  </console>
 
 </div>

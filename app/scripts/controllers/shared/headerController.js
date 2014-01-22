@@ -2,7 +2,7 @@
 
 angular.module('mudApp.mainView')
 
-  .controller('HeaderCtrl', ['$scope', 'authService', '$location', function($scope, authService, $location) {
+  .controller('HeaderCtrl', ['$scope', 'authService', '$location', 'uiSettingsService', function($scope, authService, $location, uiSettingsService) {
 
     $scope.showSettings = false;
 
@@ -16,7 +16,7 @@ angular.module('mudApp.mainView')
 
     $scope.saveSettings = function() {
       $scope.settings();
-      $scope.data.uiSettings.$save();
+      uiSettingsService.saveSettings($scope.data.uiSettings);
     };
 
     $scope.toggleDrag = function() {
@@ -31,12 +31,8 @@ angular.module('mudApp.mainView')
       $scope.data.uiSettings.guisettings.snap = !$scope.data.uiSettings.guisettings.snap;
     };
 
-    $scope.hideCurrentPage = function(page) {
-      if ($location.path() === page) {
-        return true;
-      } else {
-        return false;
-      }
+    $scope.hideCurrentPage = function(path) {
+      return $location.path() === path;
     };
 
     $scope.hide = function() {
