@@ -20,15 +20,15 @@ angular.module('mudApp.mainView')
     };
 
     $scope.toggleDrag = function() {
-      $scope.data.uiSettings.guisettings.draggable = !$scope.data.uiSettings.guisettings.draggable;
+      $scope.data.uiSettings.guiSettings.draggable = !$scope.data.uiSettings.guiSettings.draggable;
     };
 
     $scope.toggleResize = function() {
-      $scope.data.uiSettings.guisettings.resizable = !$scope.data.uiSettings.guisettings.resizable;
+      $scope.data.uiSettings.guiSettings.resizable = !$scope.data.uiSettings.guiSettings.resizable;
     };
 
     $scope.toggleSnap = function() {
-      $scope.data.uiSettings.guisettings.snap = !$scope.data.uiSettings.guisettings.snap;
+      $scope.data.uiSettings.guiSettings.snap = !$scope.data.uiSettings.guiSettings.snap;
     };
 
     $scope.hideCurrentPage = function(path) {

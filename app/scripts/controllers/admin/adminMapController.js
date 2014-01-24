@@ -8,7 +8,7 @@ angular.module('mudApp.adminView')
 
     $scope.refreshView = function(delta) {
       $scope.mapDelta += delta;
-      adminMapService.refreshView($scope.mapDelta);
+      adminMapService.refreshView($scope.mapDelta, $scope.mapData);
     };
 
   }]);
