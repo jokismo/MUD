@@ -16,5 +16,10 @@
 
 #worldmapCont {
   position: fixed;
+  z-index: 3;
+}
+
+#nodemapCont {
+  position: fixed;
   z-index: 4;
 }

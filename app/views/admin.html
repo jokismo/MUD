@@ -26,6 +26,17 @@
               load-size
               load-position>
     </adminmap>
+
+    <nodemap id="nodemapCont"
+              ng-controller="NodeMapCtrl"
+              ng-show="dataFromMap.show"
+              draggable>
+    </nodemap>
+
+    <npceditor class="colBox"
+              ng-controller="NpcEditorCtrl"
+              draggable>
+    </npceditor>
   </div>
 
   <gamestatus class="colBox"
@@ -36,7 +47,6 @@
                load-size
                load-position>
   </gamestatus>
-
 
   <adminbar class="colBox"
               ng-controller="AdminBarCtrl"

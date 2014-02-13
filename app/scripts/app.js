@@ -45,9 +45,9 @@ angular.module('mudApp',
       isMobile: (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent)
     };
     // Prevent Select
-    $document.bind('selectstart', function(event) {
+    /**$document.bind('selectstart', function(event) {
       event.preventDefault();
-    });
+    });**/
     // Auth Related
 
     $rootScope.$on('$firebaseSimpleLogin:logout', function() {

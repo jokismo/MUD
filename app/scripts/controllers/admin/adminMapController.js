@@ -2,7 +2,7 @@
 
 angular.module('mudApp.adminView')
 
-  .controller('AdminMapCtrl', ['$scope', '$timeout', 'adminMapService', function($scope, $timeout, adminMapService) {
+  .controller('AdminMapCtrl', ['$scope', 'adminMapService', function($scope, adminMapService) {
 
     $scope.mapDelta = 3;
 

@@ -7,17 +7,26 @@ angular.module('mudApp.adminView')
     return {
 
       loadMap: function(uid, mapName) {
-        var mapRef = firebaseBind(['users', uid, 'admin','tempMaps', mapName]);
+        var mapBind = firebaseBind(['users', uid, 'admin','tempMaps', mapName]);
+        var mapRef =  firebaseRef(['users', uid, 'admin','tempMaps', mapName]);
         var that = this;
-        mapRef.$on('loaded', function() {
-          that.refreshView.call(that, 3, mapRef);
+        var sendData = {
+          deferred: $q.defer(),
+          mapBind: mapBind
+        };
+        var deferred = $q.defer();
+        mapRef.once('value', function(data) {
+          that.refreshView.call(that, 3, data.val(), sendData);
+        }, function(err) {
+          deferred.reject(err);
         });
-        return mapRef;
+        return sendData.deferred.promise;
       },
 
       bindNewMap: function(uid, map) {
         var paper = this.paper;
         var link = ['users', uid, 'admin','tempMaps', map.name];
+        var mapList = firebaseRef(['users', uid, 'admin','tempMaps', 'mapList']);
         var deferred = $q.defer();
         firebaseRef(link).transaction(function(currentData) {
           if (currentData === null) {
@@ -31,6 +40,7 @@ angular.module('mudApp.adminView')
             deferred.reject(error);
           }
           if (committed && !error) {
+            mapList.push(map.name);
             deferred.resolve(firebaseBind(link));
           }
         });
@@ -38,7 +48,7 @@ angular.module('mudApp.adminView')
       },
 
       getMapList: function(uid) {
-        return firebaseRef(['users', uid, 'admin', 'tempMaps']);
+        return firebaseRef(['users', uid, 'admin', 'tempMaps', 'mapList']);
       },
 
       getRegions: function() {
@@ -68,26 +78,49 @@ angular.module('mudApp.adminView')
           blocked: {
             fill: 'false',
             'stroke-opacity': 0.3
+          },
+          current: {
+            fill: 'white',
+            'stroke-opacity': 0.3
+          },
+          npc: {
+            fill: 'yellow',
+            'stroke-opacity': 0.3
           }
         }
       },
 
-      initData: function(rows, cols, region, mapName) {
+      initData: function(data) {
         var mapData = {
           nodes: {},
-          rows: rows,
-          cols: cols,
-          name: mapName,
-          region: region
+          newData: 0,
+          rows: data.rows,
+          cols: data.cols,
+          width: data.cols * data.roomCols,
+          height: data.rows * data.roomRows,
+          connect: false,
+          name: data.mapName,
+          region: data.region
         };
         var deferred = $q.defer();
-        var i, j;
+        var g, h, i, j,
+          defaultRoom = {};
 
-        for (i = 0; i < rows; i++) {
+        for(g = 0; g < data.roomRows; g++) {
+          defaultRoom[g] = {};
+          for(h = 0; h < data.roomCols; h++) {
+            defaultRoom[g][h] = 'a';
+          }
+        }
+
+        for (i = 0; i < data.rows; i++) {
           mapData.nodes[i] = {};
-          for (j = 0; j < cols; j++) {
+          for (j = 0; j < data.cols; j++) {
             mapData.nodes[i][j] = {
               room: true,
+              roomMap: defaultRoom,
+              rows: data.roomRows,
+              cols: data.roomCols,
               n: 'c',
               s: 'c',
               w: 'c',
@@ -105,7 +138,7 @@ angular.module('mudApp.adminView')
         return deferred.promise;
       },
 
-      refreshView: function(nodeSize, data) {
+      refreshView: function(nodeSize, data, optionalData) {
         var i, j, l, m, rect, path, mainNode, oddRow, createRowTask, paper, mainRow, mainCol, mapCoord, direcs, length, className,
           nodeGrid    = this.nodeGrid,
           numCols     = data.cols * 2 + 1,
@@ -154,17 +187,9 @@ angular.module('mudApp.adminView')
             if (mainNode) {
               rect.transform('s3');
               className = 'T-' + mainRow + '-' + mainCol + '_';
-              rect.node.setAttribute('data-mainNode', 'true');
-              rect.node.setAttribute('data-mainRow', mainRow);
-              rect.node.setAttribute('data-mainCol', mainCol);
               direcs = ['n', 's', 'w', 'e', 'nw', 'ne', 'sw', 'se'];
               length = direcs.length;
-              for (m = 0; m < length; m++) {
-                mapCoord += mainRow + '-' + mainCol + '-' + direcs[m];
-                if (m < direcs.length - 1) {
-                  mapCoord += '_';
-                }
-              }
+              mapCoord += mainRow + '-' + mainCol;
             } else if (rowId === 0) {
               if (j === 0) {
                 mapCoord = mainRow + '-' + mainCol + '-' + 'nw';
@@ -214,12 +239,109 @@ angular.module('mudApp.adminView')
           }
           posY += 7 * nodeSize;
         };
-
         for (i = 0; i < numRows; ++i) {
           (createRowTask(i));
         }
-
+        if (optionalData) {
+          optionalData.deferred.resolve(optionalData.mapBind);
+        }
         this.refreshNodes(data);
+      },
+
+      oldNode: {},
+      currentNode: function(row, col) {
+        if (typeof this.oldNode.row !== 'undefined') {
+          this.nodeGrid[this.oldNode.row][this.oldNode.col].attr(this.oldNode.attr);
+        }
+        this.oldNode = {
+          row: row * 2 + 1,
+          col: col * 2 + 1,
+          attr: this.nodeGrid[row * 2 + 1][col * 2 + 1].attr()
+        };
+        this.nodeGrid[row * 2 + 1][col * 2 + 1].attr(this.viewStyling.nodeStyles.current);
+      },
+
+      npcChanges: {},
+      showNpcNode: function(row, col) {
+        if (typeof this.npcChanges[row] === 'undefined') {
+          this.npcChanges[row] = {};
+        }
+        this.npcChanges[row][col] = this.nodeGrid[row * 2 + 1][col * 2 + 1].attr();
+        this.nodeGrid[row * 2 + 1][col * 2 + 1].attr(this.viewStyling.nodeStyles.npc);
+      },
+
+      revertNpcNode: function(row, col) {
+        this.nodeGrid[row * 2 + 1][col * 2 + 1].attr(this.npcChanges[row][col]);
+        delete this.npcChanges[row][col];
+        if (Object.keys(this.npcChanges[row]).length === 0) {
+          delete this.npcChanges[row];
+        }
+      },
+
+      revertNpcNodes: function() {
+        var changes = this.npcChanges;
+        var keys = Object.keys(changes);
+        var length = keys.length, innerKeys, innerLength,
+          grid = this.nodeGrid, i, j;
+        for (i = 0; i < length; ++i) {
+          innerKeys = Object.keys(changes[keys[i]]);
+          innerLength = innerKeys.length;
+          for (j = 0; j < innerLength; ++j) {
+            grid[keys[i] * 2 + 1][innerKeys[j] * 2 + 1].attr(changes[keys[i]][innerKeys[j]]);
+          }
+        }
+        this.npcChanges = {};
+      },
+
+      simpleRefresh: function(dataArray, walkable, mainNode) {
+        var length = dataArray.length, i, coord, newState, rect, className, mainCoord, style,
+          nodeGrid = this.nodeGrid;
+        if (walkable) {
+          style = this.viewStyling.nodeStyles.blocked;
+          newState = 'F';
+        } else {
+          style = this.viewStyling.nodeStyles.normal;
+          newState = 'T';
+        }
+        for (i = 0; i < length; i++) {
+          coord = dataArray[i].split('-');
+          mainCoord = [(coord[0] * 2 + 1), (coord[1] * 2 + 1)];
+          if (mainNode === true) {
+            rect = nodeGrid[mainCoord[0]][mainCoord[1]];
+          } else {
+            switch(coord[2]) {
+              case 'n':
+                rect = nodeGrid[mainCoord[0]-1][mainCoord[1]];
+                break;
+              case 's':
+                rect = nodeGrid[mainCoord[0]+1][mainCoord[1]];
+                break;
+              case 'e':
+                rect = nodeGrid[mainCoord[0]][mainCoord[1]+1];
+                break;
+              case 'w':
+                rect = nodeGrid[mainCoord[0]][mainCoord[1]-1];
+                break;
+              case 'nw':
+                rect = nodeGrid[mainCoord[0]-1][mainCoord[1]-1];
+                break;
+              case 'ne':
+                rect = nodeGrid[mainCoord[0]-1][mainCoord[1]+1];
+                break;
+              case 'sw':
+                rect = nodeGrid[mainCoord[0]+1][mainCoord[1]-1];
+                break;
+              case 'se':
+                rect = nodeGrid[mainCoord[0]+1][mainCoord[1]+1];
+                break;
+            }
+          }
+          rect.attr(style);
+          className = rect.node.getAttribute('class');
+          className = className.substr(1);
+          className = newState + className;
+          rect.node.setAttribute('class', className);
+        }
       },
 
       refreshNodes: function(data) {
@@ -389,6 +511,138 @@ angular.module('mudApp.adminView')
 
         return [row, col, direc];
 
+      },
+
+      autoNodes: function(defaultState, data, opening) {
+        var i, j, k, l, createRowTask, nodeRows, nodeCols, roomState, vertDiff, horDiff, horLeft, vertTop,
+          numCols = data.cols,
+          numRows = data.rows,
+          direcs = ['n', 's', 'w', 'e', 'nw', 'ne', 'sw', 'se'],
+          length = direcs.length;
+
+
+        createRowTask = function(rowId) {
+          for (j = 0; j < numCols; ++j) {
+            nodeRows = data.nodes[rowId][j].rows;
+            nodeCols = data.nodes[rowId][j].cols;
+
+            if (!data.nodes[rowId][j].room) {
+              roomState = 'a';
+            } else {
+              roomState = defaultState;
+            }
+            for (k = 0; k < nodeRows; ++k) {
+              for (l = 0; l < nodeCols; ++l) {
+                data.nodes[rowId][j].roomMap[k][l] = roomState;
+              }
+            }
+            if (data.nodes[rowId][j].room) {
+              vertDiff =  nodeRows - opening - 4;
+              vertTop = vertDiff / 2 | 0;
+              horDiff =  nodeCols - opening - 4;
+              horLeft = horDiff / 2 | 0;
+              for (k = 0; k < length; ++k) {
+                switch(direcs[k]) {
+                  case 'n':
+                    if (data.nodes[rowId][j][direcs[k]] === 'b') {
+                      for (l = 2; l < nodeCols - 2; ++l) {
+                        data.nodes[rowId][j].roomMap[0][l] = 'a';
+                      }
+                    } else if (numCols > 5 && (horDiff > 0)) {
+                      if (horLeft > 0) {
+                        for (l = 0; l < horLeft; ++l) {
+                          data.nodes[rowId][j].roomMap[0][l + 2] = 'a';
+                        }
+                      }
+                      for (l = 0; l < horDiff - horLeft; ++l) {
+                        data.nodes[rowId][j].roomMap[0][nodeCols - 3 - l] = 'a';
+                      }
+                    }
+                    break;
+                  case 's':
+                    if (data.nodes[rowId][j][direcs[k]] === 'b') {
+                      for (l = 2; l < nodeCols - 2; ++l) {
+                        data.nodes[rowId][j].roomMap[nodeRows - 1][l] = 'a';
+                      }
+                    } else if (numCols > 5 && (horDiff > 0)) {
+                      if (horLeft > 0) {
+                        for (l = 0; l < horLeft; ++l) {
+                          data.nodes[rowId][j].roomMap[nodeRows - 1][l + 2] = 'a';
+                        }
+                      }
+                      for (l = 0; l < horDiff - horLeft; ++l) {
+                        data.nodes[rowId][j].roomMap[nodeRows - 1][nodeCols - 3 - l] = 'a';
+                      }
+                    }
+                    break;
+                  case 'e':
+                    if (data.nodes[rowId][j][direcs[k]] === 'b') {
+                      for (l = 2; l < nodeRows - 2; ++l) {
+                        data.nodes[rowId][j].roomMap[l][nodeCols - 1] = 'a';
+                      }
+                    } else if (numCols > 5 && (vertDiff > 0)) {
+                      if (vertTop> 0) {
+                        for (l = 0; l < vertTop; ++l) {
+                          data.nodes[rowId][j].roomMap[l + 2][nodeCols - 1] = 'a';
+                        }
+                      }
+                      for (l = 0; l < vertDiff - vertTop; ++l) {
+                        data.nodes[rowId][j].roomMap[nodeRows - 3 - l][nodeCols - 1] = 'a';
+                      }
+                    }
+                    break;
+                  case 'w':
+                    if (data.nodes[rowId][j][direcs[k]] === 'b') {
+                      for (l = 2; l < nodeRows - 2; ++l) {
+                        data.nodes[rowId][j].roomMap[l][0] = 'a';
+                      }
+                    } else if (numCols > 5 && (vertDiff > 0)) {
+                      if (vertTop> 0) {
+                        for (l = 0; l < vertTop; ++l) {
+                          data.nodes[rowId][j].roomMap[l + 2][0] = 'a';
+                        }
+                      }
+                      for (l = 0; l < vertDiff - vertTop; ++l) {
+                        data.nodes[rowId][j].roomMap[nodeRows - 3 - l][0] = 'a';
+                      }
+                    }
+                    break;
+                  case 'nw':
+                    if (data.nodes[rowId][j][direcs[k]] === 'b') {
+                      data.nodes[rowId][j].roomMap[0][0] = 'a';
+                      data.nodes[rowId][j].roomMap[0][1] = 'a';
+                      data.nodes[rowId][j].roomMap[1][0] = 'a';
+                    }
+                    break;
+                  case 'ne':
+                    if (data.nodes[rowId][j][direcs[k]] === 'b') {
+                      data.nodes[rowId][j].roomMap[0][nodeCols -2] = 'a';
+                      data.nodes[rowId][j].roomMap[0][nodeCols -1] = 'a';
+                      data.nodes[rowId][j].roomMap[1][nodeCols -1] = 'a';
+                    }
+                    break;
+                  case 'sw':
+                    if (data.nodes[rowId][j][direcs[k]] === 'b') {
+                      data.nodes[rowId][j].roomMap[nodeRows - 1][1] = 'a';
+                      data.nodes[rowId][j].roomMap[nodeRows - 1][0] = 'a';
+                      data.nodes[rowId][j].roomMap[nodeRows - 2][0] = 'a';
+                    }
+                    break;
+                  case 'se':
+                    if (data.nodes[rowId][j][direcs[k]] === 'b') {
+                      data.nodes[rowId][j].roomMap[nodeRows - 1][nodeCols -2] = 'a';
+                      data.nodes[rowId][j].roomMap[nodeRows - 1][nodeCols -1] = 'a';
+                      data.nodes[rowId][j].roomMap[nodeRows - 2][nodeCols -1] = 'a';
+                    }
+                    break;
+                }
+              }
+            }
+          }
+        };
+        for (i = 0; i < numRows; ++i) {
+          (createRowTask(i));
+        }
       }
     };
   }]);

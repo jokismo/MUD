@@ -1,7 +1,10 @@
 {
   "name": "mud",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "firebase": "~1.0.5",
+    "firebase-token-generator": "~0.1.4"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-autoprefixer": "~0.4.0",

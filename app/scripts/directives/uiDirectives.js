@@ -38,12 +38,14 @@ angular.module('mudApp.mainView')
         var elemName = element.prop("tagName").toLowerCase(),
           options = {
             snap: true,
-            containment: "document",
+            //containment: "document",
             stop: function(event, ui) {
-              scope.$apply(function() {
-                scope.data.uiSettings[elemName].posX = ui.offset.left;
-                scope.data.uiSettings[elemName].posY = ui.offset.top;
-              });
+              if (typeof scope.data.uiSettings[elemName] !== 'undefined') {
+                scope.$apply(function() {
+                  scope.data.uiSettings[elemName].posX = ui.offset.left;
+                  scope.data.uiSettings[elemName].posY = ui.offset.top;
+                });
+              }
             }
           };
         scope.$on('loadGui', function() {
