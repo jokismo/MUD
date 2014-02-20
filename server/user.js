@@ -17,5 +17,7 @@ var user = {
   }],
   debuffs: {
 
-  }
+  },
+  skills: [],
+  items: {}
 };

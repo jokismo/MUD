@@ -3,11 +3,10 @@
 var _ = require('underscore');
 var firebaseServices = require('./firebaseServices');
 var firebaseRef = firebaseServices.firebaseRef;
-var BattleState = require('./battlestate');
 var serverName;
 
 firebaseServices.auth
- .then(function() {
+  .then(function() {
     serverOnline();
     initBattleQueue();
   }, function(err) {
