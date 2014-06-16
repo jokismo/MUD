@@ -4,15 +4,15 @@ var cp = require('child_process'),
   Q = require('q');
 var serverList = [{
   desc: 'Battle Server',
-  path: '/battleServer.js'
+  path: '/battleServer/server.js'
   },
   {
     desc: 'Battle Server 2',
-    path: '/battleServer.js'
+    path: '/battleServer/server.js'
   },
   {
     desc: 'Path Server',
-    path: '/pathServer.js'
+    path: '/pathServer/server.js'
   }];
 var idList = {};
 var i, deferred = Q.defer();
@@ -21,7 +21,7 @@ var i, deferred = Q.defer();
 
 function launchInitServer() {
   var proc;
-  proc = cp.fork(__dirname + 'initServer.js');
+  proc = cp.fork(__dirname + '/initServer.js');
   proc.send('Init Server');
   proc.on('message', function(data) {
     if (data === 'complete') {
@@ -30,6 +30,7 @@ function launchInitServer() {
   })
     .on('exit', function(code, signal) {
       if (signal === 'SIGTERM') {
+        console.log('Init Tasks Complete');
         deferred.resolve();
       }
     });
@@ -47,7 +48,7 @@ function startServer(id) {
 }
 
 function serverError(error) {
-  console.log(error);
+  console.error(error);
 }
 
 function serverExit(code) {

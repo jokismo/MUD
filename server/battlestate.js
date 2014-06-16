@@ -1,15 +1,39 @@
 'use strict';
 
 var _ = require('underscore');
+var Q = require('q');
 var async = require('async');
 var firebaseServices = require('./firebaseServices');
 var firebaseRef = firebaseServices.firebaseRef;
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 var Mobs = require('./mobGenerator');
-var battleStates = {};
 
-function init(locRef, battleId) {
+function BattleStateController (serverName, serverRef) {
+  this.battleStates = {};
+  this.serverRef = serverRef;
+  this.serverName = serverName;
+  this.battleQueueRef = firebaseRef(['battleInitQueue', serverName]);
+}
+
+BattleStateController.prototype.init = function() {
+  Mobs.init()
+    .then(function() {
+
+    }, function(err) {
+
+    });
+};
+
+BattleStateController.prototype.initMaps = function(asyncTaskDone) {
+
+};
+
+BattleStateController.prototype.processBattleQueue = function(queueData) {
+
+};
+
+function initNewBattle(locRef, battleId) {
   firebaseRef(['tempMapState', 'nodes', locRef.mapName, locRef.node[0], locRef.node[1]])
     .on('value', function() {
       var tasks = [];
@@ -70,5 +94,20 @@ function battleStateListen(data) {
 
 }
 
-module.exports.init = init;
-module.exports.battleStates = battleStates;
+function quickBind(func, context) {
+  return function() {
+    func.apply(context, arguments);
+  };
+}
+
+function onError(text, error) {
+  console.error(text + ' ' + error);
+}
+
+function update(text) {
+  console.log(text);
+}
+
+module.exports = function(serverName, serverRef) {
+  return new BattleStateController(serverName, serverRef);
+};

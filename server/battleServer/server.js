@@ -1,16 +1,19 @@
 'use strict';
 
 var _ = require('underscore');
-var firebaseServices = require('./firebaseServices');
+var firebaseServices = require('../firebaseServices');
 var firebaseRef = firebaseServices.firebaseRef;
-var battleStateControllerInit = require('./battlestate');
+var BattleStateController = require('./battleStateController');
+var helpers = require('../helpers');
+var onError = helpers.onError;
+var update = helpers.update;
 var serverName, server, battleStateController;
 
 firebaseServices.auth()
- .then(function() {
+  .then(function() {
     server = new BattleServer(serverName);
     server.init();
-    battleStateController = battleStateControllerInit(serverName, server);
+    battleStateController = new BattleStateController(serverName);
     battleStateController.init();
   }, function(err) {
     onError(serverName + 'Auth Error: ', err);
@@ -38,12 +41,4 @@ function managePresence(data) {
   } else {
     onError('Firebase Error: ', serverName + ' disconnected from Firebase');
   }
-}
-
-function onError(text, error) {
-  console.error(text + ' ' + error);
-}
-
-function update(text) {
-  console.log(text);
 }
