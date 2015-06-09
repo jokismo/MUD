@@ -7,7 +7,7 @@ quickBind = require('../helpers').quickBind,
 services = {},
 FirebaseTokenGenerator = require('firebase-token-generator'),
 firebaseRootRef = new Firebase('https://jokismo.firebaseio.com/'),
-tokenGenerator = new FirebaseTokenGenerator('FTHF4J22wsnxOQwqMq2PsoPdCtGdTbEqEzCGSXAv'),
+tokenGenerator = new FirebaseTokenGenerator(''),
 token = tokenGenerator.createToken(
   {id: 'server'},
   {admin: true,
